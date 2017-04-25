@@ -1,0 +1,6066 @@
+﻿<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0 , maximum-scale=1.0, user-scalable=0">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="css/rangeslider.css">
+		<link rel="stylesheet" href="css/common.css" />
+		<link href="jquery-ui.min.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="css/kpl.css" />
+        <link rel="stylesheet" href="time/mobiscroll_002.css" />
+        <link rel="stylesheet" href="time/mobiscroll.css" />
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script src="time/mobiscroll_002.js"></script>
+		<script src="time/mobiscroll.js"></script>
+		<script type="text/javascript" src="jquery-ui.min.js"></script>
+		<script type="text/javascript" src="js/iscroll.js"></script>
+		<script type="text/javascript" src="js/rangeslider.min.js"></script>
+		<script type="text/javascript" src="js/iscroll-probe.js"></script>
+		<!--注意本地调试不要注释下面的js,真机运行或者上传注释下面js-->
+		<script type="text/javascript" src="https://storage.jd.com/testsmartcloud/jdsmart-pc-1.0.1.js"></script>
+
+		<script type="text/javascript" src="js/jdsmart-1.0.3.js"></script>
+		<title>WIFI</title>
+	</head>
+	<!--onload="eventRecordLoaded()"-->
+
+	<body>
+
+		<!--<button style="width: 200px; height: 100px;background: url(images/alarm_msg_normal.png) no-repeat  50% 50%;background-size: contain;"></button>-->
+		<div id="dialog_message" title="报警" style="display: none;">
+			<p>
+				<span><b>关闭</b>:关闭报警弹框提示。<b>消音</b>:解除本次报警，消除报警声音。</span>
+				<br /><span id="alaremtime_span_cls">...</span>
+			</p>
+		</div>
+
+		<div id="dialog_alarm_tip" title="提示" style="display: none;">
+			<p>
+				<span><b>注意</b>:当前布防模式将由<span id="current_alarm_mode"><b></b></span>变为<span id="select_alarm_mode"><b></b></span></span>
+			</p>
+		</div>
+
+		<div id="btn_direction" style="display: block;">
+		</div>
+
+		<section class="my" id="helpPage" style="background-color: #FFFFFF;width: 100%;">
+
+			<ul class="helpBtnBar" id="helpBtn_Bar">
+			</ul>
+			<div id="reserve_all" style="display: none;">
+				<div class="reserve">
+
+				</div>
+			</div>
+		</section>
+
+		<div id="zoneLangDlg" style="display: none;">
+			<div id="header">
+				<span>iScroll</span>
+				<button id="clsZLDlg" onclick="clsZoneLangDlg()"></button>
+			</div>
+
+			<div id="zoneLangDlg_wrapper">
+				<div id="zoneLangDlg_scroller">
+					<ul>
+					</ul>
+				</div>
+			</div>
+
+			<div id="footer" style="display: block;"></div>
+			<!--			<div id="footer" style="display: block;"><button onclick="clsZoneLangDlg()">close</button></div>-->
+		</div>
+
+		<section class="my">
+
+			<div id="hostSetting">
+				<!--<div id="page_title">
+					<h3></h3>
+				</div>-->
+				<div style="overflow:hidden;height:auto;">
+					<div id="page_user" style="display:none;">
+
+						<!--  报警状态按钮启动        -->
+						<div id="example_con_all" class="example_con" style="display: none;">
+						</div>
+
+						<div class="keyboard" style="display: none;">
+							<ul class="key_all" id="key_alls"></ul>
+						</div>
+
+						<div class="ht60">
+							<h1></h1>
+						</div>
+
+						<ul class="select_1_3" id="msgLevel_list">
+							<li>
+								<input onClick="MsgLevelSel(0)" id="msg_level_sel_0" class="radio" name="msg_level_sel" type="radio" />
+								<label for="msg_level_sel_0" class="trigger"><em class="ico21"></em><p id="msg_level_1"> </p></label>
+							</li>
+							<li>
+								<input onClick="MsgLevelSel(1)" id="msg_level_sel_1" class="radio" name="msg_level_sel" type="radio" />
+								<label for="msg_level_sel_1" class="trigger"><em class="ico22"></em><p id="msg_level_2"> </p></label>
+							</li>
+							<li>
+								<input onClick="MsgLevelSel(2)" id="msg_level_sel_2" class="radio" name="msg_level_sel" type="radio" />
+								<label for="msg_level_sel_2" class="trigger"><em class="ico23"></em><p id="msg_level_3"> </p></label>
+							</li>
+						</ul>
+
+						<div id="draw_progress_all">
+							<div class="draw_progress">
+							</div>
+						</div>
+
+						<div class="onePixLine" style="margin-bottom: 10px;display: none;">
+
+						</div>
+						<center style="display: none;"><button id="validateZT">校正时区</button></center>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="my">
+			<button onclick="getAlarmRecord()" style="display: none;">报警记录测试</button>
+
+			<ul class="armmod" id="armmod_list">
+				<li>
+					<input onClick="mode(1)" id="moshi_1" class="radio" name="moshi" type="radio" />
+					<label for="moshi_1" class="trigger"><em class="ico1"></em><p id="armst_1"> </p></label>
+				</li>
+				<li>
+					<input onClick="mode(2)" id="moshi_2" class="radio" name="moshi" type="radio" />
+					<label for="moshi_2" class="trigger"><em class="ico2"></em><p id="armst_2"> </p></label>
+				</li>
+				<li>
+					<input onClick="mode(3)" id="moshi_3" class="radio" name="moshi" type="radio" />
+					<label for="moshi_3" class="trigger"><em class="ico3"></em><p id="armst_3"> </p></label>
+				</li>
+			</ul>
+			<div class="armmod_state"><img />
+			</div>
+
+			<div class="ht60">
+				<h1></h1>
+			</div>
+			<ul class="hostStateList" id="hostState_List">
+			</ul>
+
+			<div class="ht60" style="background-color: #FFFFFF;">
+				<h1></h1>
+			</div>
+			<ul class="hostEventBar" id="hostEvent_Bar">
+			</ul>
+
+			<div class="ht60" style="display: none;">
+				<h1></h1>
+			</div>
+
+			<!--SOS L临时凑数-->
+
+			<!--<button onclick="getAlarmRecord()">获取报警记录</button>-->
+
+		</section>
+		<!--报警记录新控件 start-->
+		<div id="alarmRecordDlg" style="display:none;">
+			<div id="alarmheader">
+				<span>iScroll</span>
+				<button id="clsARDlg" onclick="clsAlaRecdDlg()"></button>
+			</div>
+			<div class="alarmDlg_wrapper">
+				<div class="alarmDlg_scroller">
+					<div id="downTag" style="height: 50px;width:100%;background-color: #f3f3f3;position: absolute;z-index: -1;top: -50px;text-align: center; line-height: 50px;">下拉</div>
+					<ul id="ul_contend">
+					</ul>
+					<div id="upTag" style="height: 50px;width:100%;background-color: #f3f3f3;position: absolute;z-index: -1;bottom: -50px;text-align: center; line-height: 50px;">上拉</div>
+				</div>
+			</div>
+			<div id="alarmfooter" style="display: block;">
+				<!--<button onclick="clsAlaRecdDlg()">close</button>-->
+			</div>
+		</div>
+		<!--报警记录新控件 end-->
+
+		<section id="page3" style="display:none;"></section>
+
+		<section class="my">
+			<!--<div class="ht60">
+					<h1></h1>
+				</div>-->
+
+			<div id="gatewayState">
+				<div style="height:auto;overflow:hidden;">
+					<div id="page1" style="display:none;">
+						<ul class="equip"></ul>
+					</div>
+
+					<div id="page2" style="display:none;">
+						<ul class="equip"></ul>
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+		<div style="height: 54px;width: 100%;background-color: #00000000;"></div>
+
+		<div id="datePlugin"></div>
+
+		<section style="display: none;">
+			<div id="date_time" style="text-align: center">date time</div>
+		</section>
+
+		<div class="footalarm_1" id="gj" onClick="SetAlarmSt(1)" style="display:none"><button><img src="images/alarm_n.png" /></button></div>
+		<div class="footalarm_2" id="kj" onClick="SetAlarmSt(0)" style="display:none"><button><img src="images/alarm.png"/></button></div>
+
+		<div class="mengban_off" style="display:none"></div>
+		<div class="mengban" style="display:none"></div>
+		<div class="mengbanDlg" style="display:none"></div>
+
+		<div class="loader" style="display:none">
+			<div class="ball-beat">
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
+		</div>
+
+		<div id="debug_kpl" style="display: none;">
+
+			<div id="state_all" class="state">
+			</div>
+
+			<section style="display: block;">
+				<div id="debug_infos">debug_infos</div>
+			</section>
+
+			<section style="display: block;">
+
+				<div class="infos">
+					<dl>
+						<dt>cai调试信息4:</dt>
+						<dd id="info3">---</dd>
+					</dl>
+				</div>
+				<div class="infos">
+					<dl>
+						<dt>cai调试信息5_json:</dt>
+						<dd id="info4">---</dd>
+					</dl>
+				</div>
+
+				<div class="infos">
+					<dl>
+						<dt>调试信息1:</dt>
+						<dd id="info">---</dd>
+					</dl>
+				</div>
+
+				<div class="infos">
+					<dl>
+						<dt>调试信息2:</dt>
+						<dd id="info1">---</dd>
+					</dl>
+				</div>
+
+				<div class="infos2">
+					<dl>
+						<dt>调试信息3:</dt>
+						<dd id="info2">---</dd>
+					</dl>
+				</div>
+			</section>
+			
+		</div>
+      
+			
+		
+		
+		<script type="text/javascript">
+			var btn_validateZT;
+			var btn_closeAlarm;
+			var t;
+			var countDown = 0;
+			var KeyBoardBrushEn = 0;
+			var KeyBoardNum_def = 2;
+			var KeyBoard_id_sel = new Array([JDSTREAM_ID_NUM]);
+			var hostEventBarEnabel = 0; //主机的事件栏
+			var dialog_message = null;
+			var dialog_alarm_tip = null;
+			var ArmSelArg = 1;
+			var alarmScroll = null;
+			var StatusListBrushEn = 0;
+			var titleArrCn = new Array("更多", "主机设置", "子设备管理");
+			var titleArrEn = new Array("More", "Panel settings", "Sub Device management");
+			var titleArr = new Array(titleArrCn, titleArrEn, titleArrEn);
+			var curPage = 2; //$("section.my").on("click"）函数所用的变量值
+			var dayIndex = 0;
+			var lastMoreDayIndex = 0;
+			var curZoneLangFlag = "";
+			var isNewHost = true;
+			var toastTipArrCn = new Array(
+				"无事件记录"
+			);
+			var toastTipArrEn = new Array(
+				"No event record"
+			);
+
+			var toastTipArr = new Array(
+				toastTipArrCn, toastTipArrEn
+			);
+
+			//各个初始化相关数据
+			var LangAutoCov_Succeed = 0;
+			var SubNameEx_def_num = 18;
+			var debugdataIndex = 0;
+			var alarmDialogFlag = 0;
+			var add_title_flag = 0;
+			//更多页初始化
+			var helpPageEnable = 0;
+			//主页面初始化
+			var hostStateEnabel = 0;
+			var selectMode = -1;
+			var currentMode = -1;
+			var progressWidth = 0;
+			var SwitchCheckBrushEn = 0;
+			var SwitchCheckNum_def = 1;
+			var alarmScroll = null;
+			var ref_count = 0;
+			var LangSel_num = 2;
+			var UserOpreatEn = 0;
+			var last_alarm_state = 0; //上次主机的报警状态
+			var zoneLangScroll = null; //函数clsZoneLangDlg使用 (更多页面上半部弹出框)
+			var InitReserveFg = 0;
+			var ClockReserveActiveVol_Def = 30;
+			var ClockReserveSendCmdVol_Def = 10; //预约不撤防函数调用
+			var ClockReserveActive = 0;
+			var ReserveVolGroupNum_Def = 8;
+			var ReserveStr = "";
+			var lang_former = -1;
+			var lang_sel = 0;
+			var feedid = "";
+			var sub_devices_all = []; //网关连接的自设备
+			var shebei_name;
+			var isfexiang;
+			var IsMainDev = 0;
+			var date;
+			var now;
+			var cdate;
+			var ctime = 0;
+			var alarm_click_time = 0;
+			var fdate;
+			var ftime = 0;
+			var Progress_name_num_def = 9;
+			var res = 0;
+			var total_height = 34;
+			var initial_x = 20;
+			var initial_y = 6;
+			var initial_h = (initial_y * 2) + total_height;
+			var radius = total_height / 2;
+			var srceen_width;
+			var progress_brush_en = 0;
+			var ProgressOpeationMod = 0;
+			var isChinaTileShow = true;
+			var isEnglishTitlShow = false;
+			var level_num = 10;
+			//分为10个等级
+			//对recent_alarm_record_img z在家布防  外出布防  撤防 的索引
+			var recent_alarm_record_img_alarm_index = 16; //布防
+			var recent_alarm_record_img_home_alarm_index = 17; //在家布防
+			var recent_alarm_record_img_alarm_index = 18; //撤防
+			var operate_code_former = -1;
+
+			//报警记录容器
+			var lastDay = new Array();
+			var yestoday = new Array();
+			var today = new Array();
+			//原始数据用于中英转换
+			var lastDaySrc = new Array();
+			var yestodaySrc = new Array();
+			var todaySrc = new Array();
+			//能否加载更多
+			var yestodayMore = "false";
+			var todayMore = "false";
+			//容器里的最后一条记录的索引
+			var lastDayIndex = -1;
+			var yestodayIndex = -1;
+			var todayIndex = -1;
+			//最后的查询时间
+			var twoDayAgo_65535_endtime = "";
+			var today_endtime = "";
+			var yestoday_endtime = "";
+
+			// 更多选项卡语言设置数据，操作指导，设置时区	
+
+			//更多选项卡，语言设置
+			var languageDef = new Array(
+				"中文",
+				"English"
+			);
+			//更多选项卡时区设置（中文选项）
+			var timeZoneCn = new Array(
+				"UTC-12:00   埃尼威托克岛",
+				"UTC-12:00  夸贾林岛",
+				"UTC-11:00  中途岛",
+				"UTC-11:00  东萨摩亚",
+				"UTC-10:00  夏威夷",
+				"UTC-9:00  阿拉斯加",
+				"UTC-8:00  太平洋时间(美国和加拿大)",
+				"UTC-8:00  蒂华纳",
+				"UTC-7:00  山地时间(美国和加拿大)",
+				"UTC-7:00  亚利桑那",
+				"UTC-6:00  中部时间(美国和加拿大)",
+				"UTC-6:00  墨西哥城",
+				"UTC-6:00  特古西加尔巴",
+				"UTC-6:00  萨斯喀彻温省",
+				"UTC-5:00  东部时间(美国和加拿大)",
+				"UTC-5:00  印第安那州(东部)",
+				"UTC-5:00  波哥大",
+				"UTC-5:00  利马",
+				"UTC-5:00  基多",
+				"UTC-4:00  大西洋时间(加拿大)",
+				"UTC-4:00  加拉加斯",
+				"UTC-4:00  拉巴斯",
+				"UTC-3:00  巴西利亚",
+				"UTC-3:00  布宜诺斯艾利斯",
+				"UTC-3:00  乔治敦",
+				"UTC-2:00  中大西洋",
+				"UTC-1:00  亚速尔群岛",
+				"UTC-1:00  佛得角群岛",
+				"UTC+1:00  格林尼治平均时",
+				//	"格林尼治平均时:都柏林",
+				//	"格林尼治平均时:爱丁堡",
+				//	"格林尼治平均时:里斯本",
+				//	"格林尼治平均时:卡萨布兰卡",
+				//	"格林尼治平均时:蒙罗维亚",
+
+				"UTC+1:00  阿姆斯特丹",
+				"UTC+1:00  柏林",
+				"UTC+1:00  伯尔尼",
+				"UTC+1:00  罗马",
+				"UTC+1:00  维也纳",
+				"UTC+1:00  贝尔格莱德",
+				"UTC+1:00  布拉迪斯拉发",
+				"UTC+1:00  布达佩斯",
+				"UTC+1:00  卢布尔雅那",
+				"UTC+1:00  布拉格",
+				"UTC+1:00  哥本哈根",
+				"UTC+1:00  布鲁赛尔",
+				"UTC+1:00  马德里",
+				"UTC+1:00  巴黎",
+				"UTC+1:00  萨拉热窝",
+				"UTC+1:00  斯科普里",
+				"UTC+1:00  索非亚",
+				"UTC+1:00  华沙",
+				"UTC+1:00  萨格勒布",
+
+				"UTC+2:00  布加勒斯特",
+				"UTC+2:00  哈拉雷",
+				"UTC+2:00  比勒陀尼亚",
+				"UTC+2:00  赫尔辛基",
+				"UTC+2:00  里加",
+				"UTC+2:00  塔林",
+				"UTC+2:00  开罗",
+				"UTC+2:00  雅典",
+				"UTC+2:00  明斯克",
+				"UTC+2:00  以色列",
+
+				"UTC+3:00  巴格达",
+				"UTC+3:00  科威特",
+				"UTC+3:00  利雅得",
+				"UTC+3:00  莫斯科",
+				"UTC+3:00  圣彼得堡",
+				"UTC+3:00  伏尔加格勒",
+				"UTC+3:00  内罗毕",
+
+				"UTC+4:00  阿布扎比",
+				"UTC+4:00  马斯喀特",
+				"UTC+4:00  巴库",
+				"UTC+4:00  第比利斯",
+
+				"UTC+5:00  叶卡特琳堡",
+				"UTC+5:00  伊斯兰堡",
+				"UTC+5:00  卡拉奇",
+				"UTC+5:00  塔什干",
+
+				"UTC+6:00  阿拉木图",
+				"UTC+6:00  达卡",
+				"UTC+6:00  科伦坡",
+
+				"UTC+7:00  曼谷",
+				"UTC+7:00  河内",
+				"UTC+7:00  雅加达",
+
+				"UTC+8:00  北京",
+				"UTC+8:00  重庆",
+				"UTC+8:00  广州",
+				"UTC+8:00  上海",
+				"UTC+8:00  香港",
+				"UTC+8:00  乌鲁木齐",
+				"UTC+8:00  台北",
+				"UTC+8:00  新加坡",
+				"UTC+8:00  佩思",
+
+				"UTC+9:00  平壤",
+				"UTC+9:00  汉城",
+				"UTC+9:00  东京",
+				"UTC+9:00  大阪",
+				"UTC+9:00  札幌",
+				"UTC+9:00  雅库茨克",
+
+				"UTC+10:00  布里斯班",
+				"UTC+10:00  关岛",
+				"UTC+10:00  莫尔兹比港",
+				"UTC+10:00  霍巴特",
+				"UTC+10:00  堪培拉",
+				"UTC+10:00  墨尔本",
+				"UTC+10:00  悉尼",
+
+				"UTC+11:00  马加丹",
+				"UTC+11:00  所罗门群岛",
+				"UTC+11:00  新喀里多尼亚",
+
+				"UTC+12:00  奥克兰",
+				"UTC+12:00  惠灵顿",
+				"UTC+12:00  斐济",
+				"UTC+12:00  堪察加半岛",
+				"UTC+12:00  马绍尔群岛",
+
+				"UTC-3:30  纽芬兰",
+				"UTC+3:30  德黑兰",
+				"UTC+4:30  喀布尔",
+				"UTC+5:30  孟买",
+				"UTC+5:30  加尔各答",
+				"UTC+5:30  马德拉斯",
+				"UTC+5:30  新德里",
+				"UTC+9:30  阿得莱德，达尔文"
+
+			);
+			//更多选项卡时区设置（英文选项）
+			var timeZoneEn = new Array(
+				"UTC-12:00 Eniwetok",
+				"UTC-12:00 Kwajalein Island",
+				"UTC-11:00 Midway Islands",
+				"UTC-11:00 Eastern Samoa",
+				"UTC-10:00 Hawaii",
+				"UTC-9:00 Alaska",
+				"UTC-8:00 Pacific time (USA and Canada)",
+				"UTC-8:00 Tijuana",
+				"UTC-7:00 Mountain time (USA and Canada)",
+				"UTC-7:00 Arizona",
+				"UTC-6:00 Central time (USA and Canada)",
+				"UTC-6:00 Mexico City",
+				"UTC-6:00 Tegucigalpa",
+				"UTC-6:00 Saskatchewan",
+				"UTC-6:00 Eastern time (USA and Canada)",
+				"UTC-5:00 Indiana (Eastern)",
+				"UTC-5:00 Bogota",
+				"UTC-5:00 Lima",
+				"UTC-5:00 Quito",
+				"UTC-4:00 The Atlantic time (Canada)",
+				"UTC-4:00 Caracas",
+				"UTC-4:00 La Paz",
+				"UTC-3:00 Brasilia",
+				"UTC-3:00 Buenos Aires",
+				"UTC-3:00 Georgetown",
+				"UTC-2:00 Mid-Atlantic",
+				"UTC-1:00 Azores",
+				"UTC-1:00 The Cape Verde Islands",
+				"UTC+1:00 Greenwich",
+				//	"Greenwich: London",
+				//	"Greenwich: Dublin",
+				//	"Greenwich: Edinburgh",
+				//	"Greenwich: Lisbon",
+				//	"Greenwich:Casablanca",
+				//	"Greenwich:Monrovia",
+
+				"UTC+1:00 Amsterdam",
+				"UTC+1:00 Berlin",
+				"UTC+1:00 Berne",
+				"UTC+1:00 Rome",
+				"UTC+1:00 Vienna",
+				"UTC+1:00 Belgrade",
+				"UTC+1:00 Bratislava",
+				"UTC+1:00 Budapest",
+				"UTC+1:00 Ljubljana",
+				"UTC+1:00 Bragg",
+				"UTC+1:00 Copenhagen",
+				"UTC+1:00 Brussels",
+				"UTC+1:00 Madrid",
+				"UTC+1:00 Paris",
+				"UTC+1:00 Sarajevo",
+				"UTC+1:00 Skopje",
+				"UTC+1:00 Sophia",
+				"UTC+1:00 Warsaw",
+				"UTC+1:00 Zagreb",
+
+				"UTC+2:00 Bucharest",
+				"UTC+2:00 Harare",
+				"UTC+2:00 Pretoria",
+				"UTC+2:00 Helsinki",
+				"UTC+2:00 Riga",
+				"UTC+2:00 Tallinn",
+				"UTC+2:00 Cairo",
+				"UTC+2:00 Athens",
+				"UTC+2:00 Minsk",
+				"UTC+2:00 Israel",
+
+				"UTC+3:00 Baghdad",
+				"UTC+3:00 Kuwait",
+				"UTC+3:00 Riyadh",
+				"UTC+3:00 Moscow",
+				"UTC+3:00 St.Petersburg",
+				"UTC+3:00 Volgograd",
+				"UTC+3:00 Nairobi",
+
+				"UTC+4:00 Abu Dhabi",
+				"UTC+4:00 Muscat",
+				"UTC+4:00 Baku",
+				"UTC+4:00 Tbilisi",
+
+				"UTC+5:00 Ekaterinburg",
+				"UTC+5:00 Islamabad",
+				"UTC+5:00 Karachi",
+				"UTC+5:00 Tashkent",
+
+				"UTC+6:00 Almaty",
+				"UTC+6:00 Dhaka",
+				"UTC+6:00 Colombo",
+
+				"UTC+7:00 Bangkok",
+				"UTC+7:00 Hanoi",
+				"UTC+7:00 Jakarta",
+
+				"UTC+8:00 Beijing",
+				"UTC+8:00 Chongqing",
+				"UTC+8:00 Guangzhou",
+				"UTC+8:00 Shanghai",
+				"UTC+8:00 Hong Kong",
+				"UTC+8:00 Urumchi",
+				"UTC+8:00 Taipei",
+				"UTC+8:00 Singapore",
+				"UTC+8:00 Perth",
+
+				"UTC+9:00 Pyongyang",
+				"UTC+9:00 Seoul",
+				"UTC+9:00 Tokyo",
+				"UTC+9:00 Osaka",
+				"UTC+9:00 Sapporo",
+				"UTC+9:00 Yakutsk",
+
+				"UTC+10:00 Brisbane",
+				"UTC+10:00 Guam",
+				"UTC+10:00 Port Moresby",
+				"UTC+10:00 Hobart",
+				"UTC+10:00 Canberra",
+				"UTC+10:00 Melbourne",
+				"UTC+10:00 Sydney",
+
+				"UTC+11:00 Magadan",
+				"UTC+11:00 Solomon Islands",
+				"UTC+11:00 New Caledonia",
+
+				"UTC+12:00 Auckland",
+				"UTC+12:00 Wellington",
+				"UTC+12:00 Fiji",
+				"UTC+12:00 Kamchatka Peninsula",
+				"UTC+12:00 Marshall Islands",
+
+				"UTC-3:30 Newfoundland",
+				"UTC+3:30 Teheran or Tehran",
+				"UTC+4:30 Kabul",
+				"UTC+5:30 Bombay",
+				"UTC+5:30 Calcutta",
+				"UTC+5:30 Madras",
+				"UTC+5:30 New Delhi",
+				"UTC+9:30 Adelaide, Darwin"
+			);
+			//时区的值，和时区对应，值传递给设备，不能乱
+			var timeZoneIndexValue = new Array(
+				720,
+				720,
+				660,
+				660,
+				600,
+				540,
+				480,
+				480,
+				420,
+				420,
+				360,
+				360,
+				360,
+				360,
+				300,
+				300,
+				300,
+				300,
+				300,
+				240,
+				240,
+				240,
+				180,
+				180,
+				180,
+				120,
+				60,
+				60,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+
+				-60,
+				//	-60, -60, -60, -60, -60,
+				-60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60, -60,
+
+				-120, -120, -120, -120, -120, -120, -120, -120, -120, -120,
+
+				-180, -180, -180, -180, -180, -180, -180,
+
+				-240, -240, -240, -240,
+
+				-300, -300, -300, -300,
+
+				-360, -360, -360,
+
+				-420, -420, -420,
+
+				-480, -480, -480, -480, -480, -480, -480, -480, -480,
+
+				-540, -540, -540, -540, -540, -540,
+
+				-600, -600, -600, -600, -600, -600, -600,
+
+				-660, -660, -660,
+
+				-720, -720, -720, -720, -720,
+
+				210, -210, -270, -330, -330, -330, -330, -570
+			);
+			//更多选项卡中文时区和英文时区数组合并成个2维数组
+			var timeZone = new Array(
+				timeZoneCn, timeZoneEn
+			);
+			//语言类型
+			var languageType = new Array(
+				"中文",
+				"English"
+			);
+			//主页布防3个状态下3个不同图标,消警，事件记录图片
+			var armmod_state_img_arry = new Array("images/arm_b.png", "images/home_b.png", "images/disarm_b.png");
+
+			//子设备选项卡相关图片
+			var SubNameExUrl_def = new Array(
+				"other.png", "ds.png", "pir.png", "gas.png", "jjan.png", "smoke.png", "door.png", "blps.png", "move.png", "water.png", "temp.png", "co.png"
+
+				, "doorbeel.png", "remote.png", "panel.png", "keyboard.png", "beep.png", "switch.png"
+			);
+			//事件记录事件图标不同图标对应不同的事件
+			var devSrcImgUrl = new Array(
+				"images/es/unknow.png", //	00	未知 
+				"images/es/host.png", //	01	主机 
+				"images/es/panel.png", //	02	面板按键  
+				"images/es/adOperation.png", //	03	管理员操作
+				"images/es/WRC.png", //	04	无线遥控
+				"images/es/WD.png", //	05	无线探测器	
+				"images/es/RFID.png", //	06	RFID卡
+				"images/es/CD.png", //	07	有线探测器  
+				"images/es/phoneLine.png", //	08	电话线
+				"images/es/TWN.png", //	09	电信无线网
+				"images/es/GPRS.png", //	10	电信GPRS网络
+				"images/es/WIFI.png", //	11	WIFI网络 
+				"images/es/RealTimeClock.png", //	15	实时时钟
+				"images/es/WirelessSwitch.png", //	16	无线开关   
+				"images/es/BuiltInBattery.png", //	17	内置电池
+				"images/es/BuiltOutBattery.png", //	18	外置电源	
+				"images/es/Msg.png" //	19	短信
+			);
+
+			//大量小图标（主页设备信息第3个，以及事件记录）
+			var recent_alarm_record_img = new Array(
+				"00alarm_record.png", "01alarm_record.png", "02alarm_record.png", "03alarm_record.png",
+				"04alarm_record.png", "05alarm_record.png", "06alarm_record.png", "07alarm_record.png",
+				"08alarm_record.png", "09alarm_record.png", "10alarm_record.png", "11alarm_record.png",
+				"12alarm_record.png", "17alarm_record.png", "18alarm_record.png", "19alarm_record.png",
+				"20alarm_record.png", "21alarm_record.png", "22alarm_record.png", "23alarm_record.png",
+				"24alarm_record.png", "25alarm_record.png", "26alarm_record.png", "27alarm_record.png",
+				"28alarm_record.png", "29alarm_record.png", "31alarm_record.png"
+			);
+			//主页设备信息第1，2个以及设置页面消息推送模式图片
+			var stateArrImg = new Array(
+				"images/state_no_sound.png",
+				"images/state_tuisong_all.png",
+				"images/state_menci.png",
+				"images/state_sound.png",
+				"images/all_msg_normal.png",
+				"images/alarm_msg_normal.png",
+				"images/silent_msg_normal.png"
+			);
+
+			//////////报警对话框////////////////////////////////////////////////////////
+			//////////时区    中英文     操作说明书////////////////////////////////////////////////////////
+
+			/**
+			 *	1:第一步 +<b> 
+			 *  2：段落 左边空两个字符
+			 *  3:图片 
+			 */
+			//更多页面操作指导中文内容，对应语言
+			var opeDesBookCn = new Array(
+				"第一步:下载安装APP",
+				"扫描下方二维码快速下载安装",
+				"images/des/des_coder.png",
+				"第二步:开启主机",
+				"将主机放在路由器旁边,并接通电源开机",
+				"主机接入电源后会自动开启,待蓝灯开始闪烁时表示主机启动完成,正在搜索网络",
+				"images/des/host_power.png",
+				"注:按以下操作配网成功后,若将主机关闭后重启;或将主机移动到当前路由WiFi信号所覆盖的其它位置下,重新接入电源主机会自动搜索网络并连接,无需重新配网。",
+				"第三步:APP与主机配网",
+				"打开APP,直接登录或新用户注册账号",
+				"images/des/des_login.png",
+				"添加主机",
+				"在APP首页点击右上角添加设备,如下图所示进入扫码添加状态。",
+				"images/des/des_host_add1.png",
+				"扫描主机二维码如下图所示",
+				"images/des/des_host_add2.png",
+				"主机与APP配网",
+				"扫描机身二维码后进入配网步骤,如图所示长按5秒配网按钮后待主机提示'咚'声后,蓝灯快闪,正式进入配网状态。点击下一步,输入手机所在WIFI的密码,点击下一步,待主机添加成功后如下图所示,点击'使用'即可进入主机控制界面。",
+				"images/des/des_wifi1.png",
+				"images/des/des_wifi2.png",
+				"images/des/des_wifi3.png",
+				"第四步:添加配件",
+				"点击右下方箭头图标进入子设备管理界面。",
+				"images/des/des_child_wifi1.png",
+				"点击右上角'添加设备'按钮后进入设备列表界面如下图所示,此时可根据需要添加配件的类型点击列表中对应图标进入扫描添加配件",
+				"images/des/des_child_wifi2.png",
+				"images/des/des_child_wifi3.png",
+				"images/des/des_child_wifi4.png"
+			);
+			//更多页面操作指导英文内容，对应语言
+			var opeDesBookEn = new Array(
+				"Step first:APP download",
+				"Scan the QR code below; download and install the APP.",
+				"images/des/des_coder.png",
+				"Step second:Start the Control",
+				"Put the Control next to a router, power the Control and it will be started automatically",
+				"the Control will finish starting and begin to search networks once its blue LED flashes",
+				"images/des/host_power.png",
+				"Note: after successfully register the Control into network according to the procedures below," +
+				"you don't need to register again when the Control is re-started or moved to other current WiFi covered positions," +
+				"just power the Control and it can be automatically registered.",
+				"images/des/des_login.png",
+				"Add Control",
+				"Click 'add device' icon on the top right corner of home page and enter scanning state as the Figure below;" +
+				"then scan the QR code of Control.",
+				"images/des/des_host_add1.png",
+				"Control scanning QR codes as shown below",
+				"images/des/des_host_add2.png",
+				"Register the Control into APP",
+				"Scan the QR code of Control and start registration step," +
+				"As Figure, the Control will make a 'Dong' sound and its blue LED quick flashes after pressing its register button" +
+				"for 5 seconds," +
+				"then it will formally enter registration state; click 'next step'" +
+				"and enter WiFi passwords; click 'next step'" +
+				"again and wait until the Control is successfully registered; click 'use', then you can enter its control interface.",
+				"images/des/des_wifi1.png",
+				"images/des/des_wifi2.png",
+				"images/des/des_wifi3.png",
+				"Step fourth:Add Accessories",
+				"click arrow icon on the bottom right corner to enter sub-device management interface.",
+				"images/des/des_child_wifi1.png",
+				"click 'add device' on the top right corner to enter device list interface;scan and add accessories according to your individul needs;",
+				"images/des/des_child_wifi2.png",
+				"images/des/des_child_wifi3.png",
+				"images/des/des_child_wifi4.png"
+			);
+			//更多选项卡操作指导事件中英文切换数组
+			var opeDesBook = new Array(
+				opeDesBookCn, opeDesBookEn
+			);
+			//中英文数组相关数据
+
+			var Stream_def = new Array(
+				"alaremtime" //报警鸣叫剩余时间
+				, "alarmvol" //报警音量 //报警音量
+				, "alatimeset" //报警时间 //报警鸣叫时间设置
+				, "athometdefset" //在家布防设备设置
+				, "cmindlyremtime" //进门延时剩余设置
+				, "cmindlyset" //进入延时 //进门延时设置 
+				, "cmoutdlyremtime" //外出布防出门延时剩余设置 
+				, "cmoutdlyset" //退出延时 //外出布防出门延时设置
+				, "defstate" //警戒模式 //布防状态
+				, "gooutdefset" //外出布防设备设置 
+				, "newalm" //未提醒警情
+				, "remalarm" //消除报警
+				, "state" //报警状态 //报警状态  0 /1
+
+				, "debug" //调试信息------------------
+				, "eventinfo" //事件信息--------------- //14
+				, "langsel" //语种选择---------------
+				, "operate" //数据更新序号-------------------
+				, "sub_drive" //子设备信息---------------
+				, "date_time" //校正时区---------------
+				, "preordain" //预约布撤防---------------
+				, "e_vol0" //事件参数0---------------
+				, "e_vol1" //事件参数1---------------
+				, "e_vol2" //事件参数2---------------
+				, "msg_level" //消息推送级别---------------
+
+				, "sys_volume" //系统音量
+				, "doorbell_volume" //门铃音量
+				, "timeZoneIndex" //时区的索引
+			);
+			var SubNameEx_def_cn = new Array(
+				"未知设备", "对射", "红外探头", "燃气探测器", "紧急按扭", "烟感", "门磁", "玻璃破碎", "振动传感", "水位传感", "热传感", "CO传感器"
+
+				, "门铃", "遥控器", "主机", "无线键盘", "无线警号", "遥控开关"
+
+				, "探测器"
+			);
+
+			var SubNameEx_def_en = new Array(
+				"Undefined device",
+				"IR fence",
+				"PIR",
+				"Gas detector",
+				"Panic button",
+				"Smoke detector",
+				"Door sensor",
+				"Glass break detector",
+				"Vibration sensor",
+				"Water detector",
+				"Heat sensor",
+				"CO sensor",
+				"Doorbell",
+				"Remote control",
+				"Control panel",
+				"Wireless keypad",
+				"Wireless siren",
+				"Remote switch",
+				"Sensor"
+			);
+
+			var SubNameEx_def = new Array(
+				SubNameEx_def_cn, SubNameEx_def_en, SubNameEx_def_en
+			);
+
+			//收缩的状态栏描述 
+			var statusBarDes_cn = new Array(
+				"子设备管理",
+				"主机设置",
+				"校正时区",
+				"报警主机鸣叫剩余时间: ",
+				"<b>消警</b>:解除本次报警，消除报警声音。", //"<b>关闭</b>:关闭报警弹框提示。<b>消警</b>:解除本次报警，消除报警声音。",
+				"点击此处可关闭本次报警警号",
+				"报警",
+				"关闭",
+				"消警",
+				"消息推送模式选择",
+				"设备信息",
+				"主机版本号:", //11
+				"APP版本号:",
+				"操作指导说明",
+				"级",
+				"注意",
+				"确定", //16
+				"取消",
+				"<span><b>注意</b>:当前布防模式将由<span id=\"current_alarm_mode\"><b></b></span>变为<span id=\"select_alarm_mode\"><b></b></span></span>",
+				"消警..." ///19
+			);
+
+			var statusBarDes_en = new Array(
+				"Sub Device Management",
+				"Panel Settings",
+				"Correct Timezone",
+				"Panel alarm chime remaining time: ",
+				"<b>Disalarm</b>:Clear the alarm, eliminate the alarm sound.", //"<b>Close</b>:Turn off alarm prompt.<b>Disalarm</b>:Clear the alarm, eliminate the alarm sound.",
+				"Click here to close the alarm chime",
+				"Alarm",
+				"Close",
+				"Disalarm",
+				"Select message push mode",
+				"Device information",
+				"Panel Version:",
+				"APP Version:",
+				"Operation Instruction",
+				"Level",
+				"Notice",
+				"OK",
+				"Cancel",
+				"<span><b>Notice</b>:The current arming mode will be changed from <span id=\"current_alarm_mode\"><b></b></span> to <span id=\"select_alarm_mode\"><b></b></span></span>",
+				"Disalarm..." ///19
+			);
+
+			var statusBarDes = new Array(
+				statusBarDes_cn, statusBarDes_en, statusBarDes_cn
+			);
+			var SubNameEx_type_code = new Array(
+				"00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "0A", "0B"
+
+				, "16", "19", "1A", "1C", "1E", "1F"
+
+			);
+
+			//---------------
+			var MsgLevelLang_def_cn = new Array(
+				//"全部消息", "报警消息", "静默"
+				"全部消息", "报警消息", "不推送"
+			);
+			var MsgLevelLang_def_en = new Array(
+				//				"All Msgs", "Alarm Msgs", "Silent"
+				"All Msgs", "Alarm Msgs", "No Msgs"
+			);
+
+			var MsgLevelLang_def = new Array(
+				MsgLevelLang_def_cn, MsgLevelLang_def_en, MsgLevelLang_def_en
+			);
+
+			//---------------
+			var ArmStLang_def_cn = new Array(
+				"外出布防", "在家布防", "撤防"
+			);
+			var ArmStLang_def_en = new Array(
+				"Away Arm", "Home Arm", "Disarm"
+			);
+
+			var ArmStLang_def = new Array(
+				ArmStLang_def_cn, ArmStLang_def_en, ArmStLang_def_en
+			);
+
+			var StreamIDLang_def_en = new Array(
+				"Chime remaining time(S)", "Alarm volume", "Alarm duration(S)", "Home Arm Device Settings", "Entry Delay Remaining Time(S)", "Entry delay(S)", "Exit delay remaining time(S)", "Exit delay(S)", "Warning mode", "Away Arm Device Settings", "Unwarned alarm", "Eliminate alarm", "Alarm status"
+
+				, "Debug", "Event information", "Language", "Data update number", "Sub-device", "Correct timezone", "Pre Arm and disarm", "Event 0", "Event 1", "Event 2", "Message Push Level"
+
+				, "System Volume", "Doorbell Volume"
+			);
+
+			var StreamIDLang_def_cn = new Array(
+				"鸣叫剩余时间(秒)", "报警音量", "报警时长(秒)", "在家布防设备设置", "进入延时剩余时间(秒)", "进入延时(秒)", "退出延时剩余时间(秒)", "退出延时(秒)", "警戒模式", "外出布防设备设置", "未提醒警情", "消除报警", "报警状态"
+
+				, "调试信息", "事件信息", "语种选择", "数据更新序号", "子设备信息", "校正时区", "预约布撤防", "事件参数0", "事件参数1", "事件参数2", "消息推送级别"
+
+				, "系统音量", "门铃音量"
+			);
+
+			var StreamIDLang_def = new Array(
+				StreamIDLang_def_cn, StreamIDLang_def_en, StreamIDLang_def_en
+			);
+			//更多选项卡上半部文本中文
+			var textArrayCn = new Array(
+				"语言/Language",
+				"操作指导",
+				"设置时区",
+				"主机版本:",
+				"APP版本:"
+			);
+			//更多选项卡上半部文本英文
+			var textArrayEn = new Array(
+				"Language/语言",
+				"Operation Instruction",
+				"Set Timezone",
+				"Panel version:",
+				"APP version:"
+			);
+			//更多选项卡上半部文中英文2维数组
+			var textArray = new Array(
+				textArrayCn, textArrayEn, textArrayEn
+			);
+			//开发调试看log
+			var Stream_vol = new Array(
+				"0" //报警鸣叫剩余时间
+				, "32" //报警音量 //报警音量
+				, "300" //报警时间 //报警鸣叫时间设置
+				, "0" //在家布防设备设置
+				, "0" //进门延时剩余设置
+				, "10" //进入延时 //进门延时设置 
+				, "0" //外出布防出门延时剩余设置 
+				, "10" //退出延时 //外出布防出门延时设置
+				, "1" //警戒模式 //布防状态
+				, "0" //外出布防设备设置 
+				, "0" //未提醒警情
+				, "1" //消除报警
+				, "0" //报警状态 //报警状态
+
+				, "0" //调试信息------------------
+				, "0" //事件信息---------------
+				, "0" //语种选择---------------
+				, "0" //数据更新序号-------------------
+				, "0" //子设备信息---------------
+				, "0" //校正时区---------------
+				, "0" //预约布撤防---------------
+				, "0" //事件参数0---------------
+				, "0" //事件参数1---------------
+				, "0" //事件参数2---------------
+				, "0" //消息推送级别---------------
+
+				, "0" //系统音量
+				, "0" //门铃音量
+				, "0" //时区索引
+			);
+
+			var Stream_vol_flag = new Array(
+				0 //报警鸣叫剩余时间
+				, 0 //报警音量 //报警音量
+				, 0 //报警时间 //报警鸣叫时间设置
+				, 0 //在家布防设备设置
+				, 0 //进门延时剩余设置
+				, 0 //进入延时 //进门延时设置 
+				, 0 //外出布防出门延时剩余设置 
+				, 0 //退出延时 //外出布防出门延时设置
+				, 0 //警戒模式 //布防状态
+				, 0 //外出布防设备设置 
+				, 0 //未提醒警情
+				, 0 //消除报警
+				, 0 //报警状态 //报警状态
+
+				, 0 //调试信息------------------
+				, 0 //事件信息---------------
+				, 0 //语种选择---------------
+				, 0 //数据更新序号-------------------
+				, 0 //子设备信息---------------
+				, 0 //校正时区---------------
+				, 0 //预约布撤防---------------
+				, 0 //事件参数0---------------
+				, 0 //事件参数1---------------
+				, 0 //事件参数2---------------
+				, 0 //消息推送级别---------------
+
+				, 0 //系统音量
+				, 0 //门铃音量
+				, 0 //时区索引
+			);
+
+			var Stream_vol_type = new Array(
+				0 //报警鸣叫剩余时间
+				, 0 //报警音量 //报警音量
+				, 0 //报警时间 //报警鸣叫时间设置
+				, 0 //在家布防设备设置
+				, 0 //进门延时剩余设置
+				, 0 //进入延时 //进门延时设置 
+				, 0 //外出布防出门延时剩余设置 
+				, 0 //退出延时 //外出布防出门延时设置
+				, 0 //警戒模式 //布防状态
+				, 0 //外出布防设备设置 
+				, 0 //未提醒警情
+				, 0 //消除报警
+				, 0 //报警状态 //报警状态
+
+				, 0 //调试信息------------------
+				, 0 //事件信息---------------
+				, 0 //语种选择---------------
+				, 0 //数据更新序号-------------------
+				, 0 //子设备信息---------------
+				, 0 //校正时区---------------
+				, 0 //预约布撤防---------------
+				, 0 //事件参数0---------------
+				, 0 //事件参数1---------------
+				, 0 //事件参数2---------------
+				, 0 //消息推送级别---------------
+
+				, 0 //系统音量
+				, 0 //门铃音量
+				, 0 //时区索引
+			);
+
+			var UserLang_def_en = new Array(
+				"Data error", "</h4><p>Bound to</p></li>", "<li><img src='images/syico1_a.png'><h4>Gateway</h4> <p id='online_device'>xxxx</p></li>", "<li onClick=addDieve()><img src='images/syico_jia.png'><h4>Add device</h4> <p>Click add more</p></li>", "Connected ", " device", "</h4><p>Online</p></li>", "</h4><p>Offline</p></li>", "<li><img src='images/syico1_a.png'><h4>Gateway</h4><p>No device</p></li>"
+			);
+
+			var UserLang_def_cn = new Array(
+				"数据错误", "</h4><p>已绑定</p></li>", "<li><img src='images/syico1_a.png'><h4>网关</h4> <p id='online_device'>xxxx</p></li>", "<li onClick=addDieve()><img src='images/syico_jia.png'><h4>添加设备</h4> <p>点击添加更多</p></li>", "已连接", "个设备", "</h4><p>在线</p></li>", "</h4><p>离线</p></li>", "<li><img src='images/syico1_a.png'><h4>网关</h4><p>未连接设备</p></li>"
+			);
+
+			var UserLang_def = new Array(
+				UserLang_def_cn, UserLang_def_en, UserLang_def_en
+			);
+
+			var btnTextArrayCn = new Array(
+				"报警/消警",
+				"事件记录"
+			);
+			var btnTextArrayEn = new Array(
+				"Alarm/Disalarm",
+				"Event Record"
+			);
+			var btnTextArray = new Array(
+				btnTextArrayCn,
+				btnTextArrayEn
+			);
+
+			var stateArrText_cn = new Array(
+				"音量:",
+				"消息推送模式",
+				"最近事件",
+
+				"报警音量",
+				"消息推送模式",
+				"最近事件"
+			);
+
+			var stateArrText_en = new Array(
+				"Vol:",
+				"Msg push mode",
+				"Recent alarm event",
+
+				"Alarm Vol",
+				"Msg push mode",
+				"Events"
+			);
+
+			var stateArrText = new Array(
+				stateArrText_cn,
+				stateArrText_en
+			);
+
+			//---------------------------
+			var Progress_name = new Array(
+				"myCanvas_0", "myCanvas_1", "myCanvas_2", "myCanvas_3", "myCanvas_4", "myCanvas_5", "myCanvas_6", "myCanvas_7", "myCanvas_8", "myCanvas_9"
+			);
+			var progress_width = new Array(
+				440, 440, 440, 440, 440, 440, 440, 440, 440
+			);
+			var progress_vol_max = new Array(
+				64, 64, 64, 999, 999, 99, 99, 99, 99
+			);
+			var progress_write_en = new Array(
+				1, 1, 1, 1, 0, 1, 0, 1, 0
+			);
+			var progress_draw_vol = new Array(
+				0, 0, 0, 0, 0, 0, 0, 0, 0
+			);
+			var progress_auto_subt_en = new Array(
+				0, 0, 0, 1, 1, 0, 1, 0, 1
+			);
+			var progress_show = new Array(
+				1, 1, 1, 1, 0, 0, 0, 0, 0
+			);
+
+			var vol_level = new Array(
+				0, 7, 13, 19, 25, 34, 42, 48, 55, 64
+			);
+
+			var alarm_time_level = new Array(
+				0, 90, 180, 270, 360, 540, 630, 720, 810, 999
+			);
+			var enter_later_level = new Array(
+				0, 9, 18, 27, 36, 54, 63, 72, 81, 99
+			);
+			var out_later_level = new Array(
+				0, 9, 18, 27, 36, 54, 63, 72, 81, 99
+			);
+
+			var progressIDs = new Array(
+				"progress_vol", //音量
+				"progress_alarm_time", //报警时长
+				"progress_tweet_time", //鸣叫剩余时间
+				"progress_enter_later", //进入延时
+				"progress_enter_later_less_time", //进入剩余时间
+				"progress_out_later", //退出延时
+				"progress_out_later_less_time" //退出延时时间
+			);
+
+			var progressHandler = new Array(
+				"progress_vol_handler", //音量0
+				"progress_alarm_time_handler", //报警时长1
+				"progress_tweet_time_handler", //鸣叫剩余时间2
+				"progress_enter_later_handler", //进入延时3
+				"progress_enter_later_less_time_handler", //进入剩余时间4
+				"progress_out_later_handler", //退出延时5
+				"progress_out_later_less_time_handler" //退出延时时间6
+			);
+
+			var progressLeftUpLable = new Array(
+				"ui-icon-volume-on",
+				"ui-icon-unlocked",
+				"ui-icon-volume-on",
+				"ui-icon-seek-next",
+				"ui-icon-seek-next",
+				"ui-icon-seek-prev",
+				"ui-icon-volume-on"
+			);
+
+			var dateArrCn = new Array(
+				"更早前",
+				"昨天",
+				"今天",
+				"确认",
+				"查看更多"
+			);
+
+			var dateArrEn = new Array(
+				"earlier",
+				"yesterday",
+				"today",
+				"Confirm",
+				"Load more"
+			);
+
+			var dateArr = new Array(
+				dateArrCn,
+				dateArrEn
+			);
+			var opeDesBookTag = new Array(
+				"1",
+				"0",
+				"2",
+				"1",
+				"0",
+				"0",
+				"3",
+				"2",
+				"1",
+				"2",
+				"3",
+				"2",
+				"2",
+				"3",
+				"2",
+				"3",
+				"2",
+				"2",
+				"3",
+				"3",
+				"3",
+				"1",
+				"2",
+				"3",
+				"2",
+				"3",
+				"3",
+				"3"
+			);
+
+			///////帮助页面/////////////////////////////////////////////////
+
+			//	事件来源	
+			var event_src_arr = new Array(
+				0x00, //	00	未知
+				0x01, //	01	主机
+				0x02, //	02	面板按键
+				0x03, //	03	管理员操作
+				0x04, //	04	无线遥控
+				0x05, //	05	无线探测器
+				0x06, //	06	RFID卡
+				0x07, //	07	有线探测器
+				0x08, //	08	电话线
+				0x09, //	09	电信无线网
+				0x0A, //	10	电信GPRS网络
+				0x0B, //	11	WIFI网络
+				0x0F, //	15	实时时钟
+				0x10, //	16	无线开关
+				0x11, //	17	内置电池
+				0x12, //	18	外置电源
+				0x13 //	19	短信
+			);
+
+			var event_src_def_cn_arr = new Array(
+				"未知",
+				"主机",
+				"面板按键",
+				"管理员操作",
+				"无线遥控",
+				"无线探测器",
+				"RFID卡",
+				"有线探测器",
+				"电话线",
+				"电信无线网",
+				"电信GPRS网络",
+				"WIFI网络",
+				"实时时钟",
+				"无线开关",
+				"内置电池",
+				"外置电源",
+				"短信"
+			);
+
+			var event_src_def_en_arr = new Array(
+				"Unknown",
+				"Panel",
+				"Panel button",
+				"Administrator operation",
+				"Wireless remote control",
+				"Wireless detector",
+				"RFID Card",
+				"Wired detector",
+				"Telephone line",
+				"Telecom wireless network",
+				"Telecom GPRS network",
+				"WIFI network",
+				"Realtime clock",
+				"Wireless switch",
+				"Built-in battery",
+				"External power supply",
+				"SMS"
+			);
+
+			var event_src_def_arr = new Array(
+				event_src_def_cn_arr,
+				event_src_def_en_arr
+			);
+			var WeekNameLang_def_cn = new Array("星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+			var WeekNameLang_def_en = new Array("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT");
+			var WeekNameLang_def = new Array(WeekNameLang_def_cn, WeekNameLang_def_en, WeekNameLang_def_en);
+			var OnOffLang_def = new Array("启用", "Enabled", "Enabled");
+			var ItemLang_def = new Array("详情> ", "Item> ", "Item> ");
+			var SetTimeLang_def = new Array("请设置预约时间", "Please set the time", "Please set the time");
+			var ReserveTitelLang_def = new Array("预约布撤防", "Reserve arm and disarm", "Reserve arm and disarm");
+			var ReserveVol = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+			var ReserveVolNow = new Array(0, 0, 0, 0, 0, 0, 0, 0);
+			//	事件识别码	
+			var event_identify_num_arr = new Array(
+				0x00, //	00	未知报警
+				0x01, //	01	入侵报警
+				0x02, //	02	报警  （周界报警）
+				0x03, //	03	劫持报警
+				0x04, //	04	火灾报警
+				0x05, //	05	燃气报警
+				0x06, //	06	水灾报警
+				0x07, //	07	救护报警
+				0x08, //	08	普通报警
+				0x09, //	09	按门铃
+				0x0A, //	10	拆动报警
+				0x0B, //	11	电压低或异常
+				0x0C, //	12	丢失
+
+				0x11, //	17	电压恢复正常
+				0x12, //	18	开启
+				0x13, //	19	关闭
+				0x14, //	20	布防
+				0x15, //	21	在家布防
+				0x16, //	22	撤防
+				0x17, //	23	因数据区错误后恢复到出厂状态
+				0x18, //	24	关机
+				0x19, //	25	程序异常导致重启
+				0x1A, //	26	通过开关键开机
+				0x1B, //	27	复位
+				0x1C, //	28	数据区恢复到出厂状态
+				0x1D, //	29	数据更新
+
+				0x1F //	31	清除所有警情的显示
+			);
+
+			var event_identify_num_def_cn_arr = new Array(
+				"未知报警",
+				"入侵报警",
+				"报警", //周界报警
+				"劫持报警",
+				"火灾报警",
+				"燃气报警",
+				"水灾报警",
+				"救护报警",
+				"普通报警",
+				"按门铃",
+				"拆动报警",
+				"电压低或异常",
+				"丢失",
+				"电压恢复正常",
+				"开启",
+				"关闭",
+				"外出布防",
+				"在家布防",
+				"撤防",
+				"未知异常",
+				"关机",
+				"程序异常导致重启",
+				"通过开关键开机",
+				"复位",
+				"未知异常",
+				"数据更新",
+				"未知异常"
+			);
+			var event_identify_num_def_en_arr = new Array(
+				"Unknown alarm",
+				"Intrusion alarm",
+				"alarm", //Perimeter alarm
+				"Hijack alarm",
+				"Fire alarm",
+				"Gas alarm",
+				"Flood alarm",
+				"Ambulance alarm",
+				"General alarm",
+				"Doorbell",
+				"Tamper alarm",
+				"Low voltage or abnormal",
+				"Lose",
+				"Voltage return to normal",
+				"Open",
+				"Close",
+				"Away Arm",
+				"Home Arm",
+				"Disarm",
+				"Unknown exception",
+				"Shutdown",
+				"Program restart",
+				"Boot via on-off key",
+				"Reset",
+				"Unknown exception",
+				"Data update",
+				"Unknown exception"
+			);
+
+			var event_identify_num_def_en_arr2 = new Array(
+				"Unknown alarm",
+				"Burglary alarm",
+				"alarm", //Perimeter alarm
+				"Hijack alarm",
+				"Fire alarm",
+				"Gas alarm",
+				"Flood alarm",
+				"Ambulance alarm",
+				"General alarm",
+				"Doorbell",
+				"Tamper alarm",
+				"Low voltage or abnormal",
+				"Lose",
+				"Voltage return to normal",
+				"Open",
+				"Close",
+				"Arm",
+				"Home Arm",
+				"Disarm",
+				"Unknown exception",
+				"Shutdown",
+				"Program restart",
+				"Boot via on-off key",
+				"Reset",
+				"Unknown exception",
+				"Data update",
+				"Unknown exception"
+			);
+			var event_identify_num_def_arr = new Array(
+				event_identify_num_def_cn_arr,
+				event_identify_num_def_en_arr,
+				event_identify_num_def_en_arr2
+			);
+
+			var dataContainer = new Array();
+			var dateContainer = new Array();
+			var srcDataContainer = new Array();
+			var btnBottomTxtCn = new Array(
+				//				"帮助", "设置", "主页", "子设备"
+				"更多", "设置", "主页", "子设备"
+			);
+			var btnBottomTxtEn = new Array(
+				//				"Help", "Settings", "Home", "SubDevice"
+				"More", "Settings", "Home", "SubDevice"
+			);
+			var btnBottomTxt = new Array(
+				btnBottomTxtCn, btnBottomTxtEn, btnBottomTxtEn
+			);
+			var bottomTipArrCn = new Array("点击查看更多加载记录", "记录已全部加载完");
+			var bottomTipArrEn = new Array("Click to see more load records", "The record has been fully loaded");
+			var bottomTipArr = new Array(
+				bottomTipArrCn, bottomTipArrEn
+			);
+
+			var everyAccumulate = 0; //记录累积  20条为界限  如果小于20条继续加载
+			var sendQueryRecordTime = 0; //查询记录的次数，防止用户刚买的新机无记录 而导致查询指令一直发送
+			var isAllDataLenZero = true; //标志7天的数据查询结果集合是否都为0;
+			//改版后 处理报警记录json 数据
+			var curentDataMore = "false";
+			//京东微连相关数据 
+			var JDSTREAM_ID_NUM = 27;
+			var JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER = 0; //报警鸣叫剩余时间
+			var JDSTREAM_VOLINFO_PT_BEEP_VOL = 1; //报警音量
+			var JDSTREAM_VOLINFO_PT_ALARM_TIME = 2; //报警鸣叫时间设置
+			var JDSTREAM_VOLINFO_PT_DEV_SET_HOME = 3; //在家布防设备设置
+			var JDSTREAM_VOLINFO_PT_INTO_TIME_OVER = 4; //进门延时剩余设置
+			var JDSTREAM_VOLINFO_PT_INTO_DELAY = 5; //进门延时设置
+			var JDSTREAM_VOLINFO_PT_EXIT_TIME_OVER = 6; //外出布防出门延时剩余设置
+			var JDSTREAM_VOLINFO_PT_EXIT_DELAY = 7; //外出布防出门延时设置
+			var JDSTREAM_VOLINFO_PT_ARM_ST = 8; //布防状态
+			var JDSTREAM_VOLINFO_PT_DEV_SET_AWAY = 9; //外出布防设备设置
+			var JDSTREAM_VOLINFO_PT_NO_ALERT_ALARM = 10; //未提醒警情
+			var JDSTREAM_VOLINFO_PT_STOP_ALARM = 11; //消除报警
+			var JDSTREAM_VOLINFO_PT_DEF_ALARM_ST = 12; //报警状态
+			var JDSTREAM_VOLINFO_PT_DEBUG = 13; //调试信息
+			var JDSTREAM_VOLINFO_PT_DEF_EVENTINFO = 14; //事件信息
+			var JDSTREAM_VOLINFO_PT_LANG_SEL = 15; //语种选择
+			var JDSTREAM_VOLINFO_PT_DEF_OPERATE_CODE = 16; //数据更新序号
+			var JDSTREAM_VOLINFO_PT_SUB_DRIVE = 17; //子设备信息
+			var JDSTREAM_VOLINFO_PT_DATE_TIME = 18; //校正时区
+			var JDSTREAM_VOLINFO_PT_PREORDAIN = 19; //预约布撤防
+			var JDSTREAM_VOLINFO_PT_E_VOL0 = 20; //事件参数0---------------
+			var JDSTREAM_VOLINFO_PT_E_VOL1 = 21; //事件参数1---------------
+			var JDSTREAM_VOLINFO_PT_E_VOL2 = 22; //事件参数2---------------
+			var JDSTREAM_VOLINFO_PT_MSG_LEVEL = 23; //消息推送级别---------------
+			var JDSTREAM_VOLINFO_PT_SYS_VOL = 24; //系统音量
+			var JDSTREAM_VOLINFO_PT_DOORBELL_VOL = 25; //门铃音量
+			var JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL = 26; //时区索引
+			//--------------------------
+			var context = new Array([JDSTREAM_ID_NUM]);
+			var cvs = new Array([JDSTREAM_ID_NUM]);
+			var progress_vol_id_sel = new Array([JDSTREAM_ID_NUM]);
+			var switch_check_id_sel = new Array([JDSTREAM_ID_NUM]);
+			var switch_checkbox = new Array([JDSTREAM_ID_NUM]);
+
+			//--------------------------
+
+			window.onload = function() {
+
+				SetUserOpreatSt(0); //$(".mengban").show();
+
+				DisplayDebugInfo("Start", 1);
+
+			}
+			ReadData()
+
+			function ReadData() {
+				$("#armst_1").text(ArmStLang_def[lang_sel][0]); //填充数据，中英文
+				$("#armst_2").text(ArmStLang_def[lang_sel][1]); //填充数据，中英文
+				$("#armst_3").text(ArmStLang_def[lang_sel][2]); //填充数据，中英文
+				$(".ht60 h1").eq(1).text(statusBarDes[lang_sel][10]); //设备信息
+				zj();
+				bx();
+			}
+
+			function zj() {
+
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = 3 * 2 * border_width - 2;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+
+				$("#hostState_List").empty();
+				var str = "";
+
+				var i = 0;
+				for(i = 0; i < 3; i++) {
+					if(i == 1) {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					} else {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#eef2f7 " + border_width + "px solid;";
+						borderStr += "border-right:#eef2f7 " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					}
+
+					//					str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+					str += "<label style= \"position:relative\">";
+					str += "<em class=\"state_em_" + (i + 1) + "\"  style= \"position:absolute\" >";
+					str += "</em>";
+
+					str += "<p id=\"state_d_" + (i + 1) + "\" style= \"position:absolute; color:#898989;\">";
+					str += "设备信息";
+					str += "</p>";
+
+					str += "<p id=\"state_p_" + (i + 1) + "\" style= \"position:absolute; color:#0197D6;\">";
+					str += "设备状态";
+					str += "</p>";
+
+					str += "</label>";
+					str += "</li>";
+				}
+				$("#hostState_List").append(str);
+			}
+			//在页面未加载完毕之前显示的loading Html自定义内容
+
+			function bx() {
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+				var border_width = 1;
+				var total_border_width = 2 * 2 * border_width - 1;
+				var li_width_pensent = (width - total_border_width) / 2.0;
+				var btnIdArray = new Array(
+					"btn_alarm_disalarm",
+					"btn_event_record"
+				);
+
+				$("#hostEvent_Bar").empty();
+				var str = "";
+
+				var i = 0;
+				for(i = 0; i < 2; i++) {
+					if(i == 1) {
+						str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;background-color: #FFFFFF;z-index:78;position:relative \">";
+						str += "<button id=" + btnIdArray[i] + "><span>" + "" + "</span></button>"
+					}
+
+					if(i == 0) {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#d4d9de " + border_width + "px solid;";
+
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+
+						//						str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+						str += "<button id=" + btnIdArray[i] + " onclick=\"SetAlarmDisplay()\"><span>" + "" + "</span></button>"
+					}
+					str += "</li>";
+				}
+
+				$("#hostEvent_Bar").append(str);
+
+				$("#hostEvent_Bar #btn_event_record").click(function() {
+
+					$("#alarmRecordDlg").show();
+					eventRecordLoaded();
+					if(alarmScroll) {
+						alarmScroll.scrollTo(0, 0);
+						alarmScroll.refresh();
+					}
+
+				});
+				$("#hostEvent_Bar #btn_alarm_disalarm span").text(btnTextArray[lang_sel][0]);
+				$("#hostEvent_Bar #btn_event_record span").text(btnTextArray[lang_sel][1]);
+
+			}
+			//绝对核心，京东方法，h5控制事件要放在里面执行，京东后台数据刷新，4秒的自动计时器，自动刷新数据
+			JDSMART.ready(function() {
+				DisplayDebugInfo("Ready", 1); //控制显示内容，
+				initDirectionBtnUI(); //初始化底部导航按钮界面，并显示主页选项卡
+				showButton(true); //京东方法，控制导航颜色，显示等
+				getInitData(); //京东方法，以app缓存来初始化页面数据
+				setInterval(function() {
+					getInfo(); //获取设备快照，京东方法，4秒刷新执行一次				
+				}, 4000);
+				setInterval(function() {
+					//RefreshReserve()   //预约撤布防刷新
+					ProgressAutoSubt(); //不是很懂，不过是跟信息刷新有关
+					RefreshIscroll(); //解决怎么动态加载插入滚动异常 ，兼容函数
+					//个人感觉在这里加个函数能够获取主机的时区，然后校正手机app上的时区				
+				}, 1000);
+			});
+
+			//调试信息函数,不同参数传进去显示不同内容
+			function DisplayDebugInfo(str, mod) {
+				//jq方法is()会返回true或者fales
+				if($("#debug_kpl").is(":visible")) { //显示
+				} else { //隐藏
+					return;
+				}
+				//切换显示内容
+				if(mod & 1) $("#info").text(str);
+				if(mod & 2) $("#info2").append("!!!!" + str.toString());
+				if(mod & 4) $("#info1").text(str);
+				if(mod & 8) {
+					$("#info3").append("!!!!!!!!" + str.toString());
+					console.log(str);
+				}
+				if(mod & 16) {
+					//					$("#info4").append("!!!!!!!!" + str.toString());
+					console.log(str);
+					dealWithTheAlarmData2(str); //调用函数  暂时不懂作用，大概处理报警数据
+					$("#info4").append("!!!!!!!!" + str.toString()); //结尾插入字符串
+				}
+			}
+
+			//暂时不懂作用，大概处理报警数据
+			function dealWithTheAlarmData2(suc) {
+
+				var debugdatapoints = new Array(); //新建个数组
+				var dt = eval(suc); //计算字符串，并执行其中的的 JavaScript 代码。
+				for(var j = 0; j < dt[0].datapoints.length; j++) { //datapoints数据点？ 找不到这个属性
+					var parseData = parseKplData(dt[0].datapoints[j].streams[0].value);
+					var parseDate = parseKplDate(dt[0].datapoints[j].at);
+					var parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+
+					/*
+					//数据冗余处理
+					var flag = true;
+					for(var i = 0; i < dateContainer.length; i++) {
+						if(dateContainer[i] == dt[0].datapoints[j].at) {
+							flag = false;
+						}
+					}
+
+					if(flag == false) {
+						continue;
+					}
+
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					dateContainer[dataIndex] = dt[0].datapoints[j].at;
+					dataContainer[dataIndex] = "" + dataIndex + "  " + parseDate + "  " + parseDataArr[0] + "  " + parseDataArr[1];
+					*/
+
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					debugdataIndex++;
+					//最后插入数据
+					$("#info4").append("" + debugdataIndex + "  " + parseDate + "  " + parseDataArr[0] + "  " + parseDataArr[1] + "</br>");
+				}
+			}
+
+			//控制.mengban div 显示隐藏
+			function SetUserOpreatSt(st) { //传参显示隐藏于显示
+				if(st == 0) {
+					$(".mengban").show(); //显示
+					UserOpreatEn = 0; //改变个变量
+				} else {
+					$(".mengban").hide(); //隐藏
+					UserOpreatEn = 1; //改变个变量
+				}
+			}
+
+			//交互等待动画显示/隐藏
+			function SetWaitDisplay(st) {
+				if(st == 0) $(".loader").hide(); //隐藏
+				else $(".loader").show(); //显示
+			}
+
+			//app统一吐司提示
+			function toast(str)
+			//toast
+			{
+				JDSMART.app.toast({
+					"message": str
+				}, null);
+			}
+
+			//配置导航按钮隐藏显示
+			function showButton(flag) {
+				JDSMART.app.config({
+					showBack: flag, // 返回按钮，false是隐藏，true是显示
+					showShare: flag,
+					showMore: flag // 更多按钮
+
+				});
+			};
+
+			//京东api,返回app初始化设备数据
+			function getInitData() {
+				JDSMART.io.initDeviceData(function(suc) {
+					initData(suc); //初始化回调，函数调用
+				});
+			};
+
+			function controlDevice(command, callback) //控制设备
+			{
+				//				SetWaitDisplay(1); //view_wait(); 
+
+				JDSMART.io.controlDevice( // 控制设备接口: 如开关
+					command,
+					function(suc) {
+						//						SetWaitDisplay(0); //hide_wait(); 
+						if(callback)
+							callback(suc);
+					},
+					function(error) {
+						toast(error.errorInfo);
+						//						SetWaitDisplay(0); //hide_wait();
+					}
+				);
+			};
+
+			//获取设备快照，京东方法
+			function getInfo() {
+				//获取设备快照
+				JDSMART.io.getSnapshot(
+					//成功回调
+					function(suc) {
+						//刷新数据
+						reflashData(suc);
+
+					},
+					function(error) {
+						// 执行失败的回调
+						toast(error.errorInfo)
+					}
+				);
+			};
+
+			/**
+			 * 报警与消警的逻辑 暂时被cai 注释掉了
+			
+			 * @param {Object} d
+			 */
+			//主页报警，消警函数
+			function SetAlarmDisplaySt(d, tm) {
+				if(d == 0) {
+					$(".hostEventBar #btn_alarm_disalarm").css({
+						"background": "url(images/btn_event_disalarm.png) no-repeat 50% 30%",
+						"background-size": "30px 30px"
+					});
+				} else if(tm > 4) {
+					$(".hostEventBar #btn_alarm_disalarm").css({
+						"background": "url(images/btn_event_alarm.gif) no-repeat 50% 30%",
+						"background-size": "30px 30px"
+					});
+				} else {
+					$(".hostEventBar #btn_alarm_disalarm").css({
+						"background": "url(images/btn_event_alarm.png) no-repeat 50% 30%",
+						"background-size": "30px 30px"
+					});
+				}
+
+			};
+
+			//设置报警显示/隐藏，里面调用调用函数（SetAlarmSt)
+			function SetAlarmDisplay() {
+				var alarmState = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST]);
+				if(alarmState == 0) {
+					SetAlarmSt(1);
+				}
+
+				if(alarmState == 1) {
+					SetAlarmSt(0);
+				}
+			}
+
+			//设置报警状态
+			function SetAlarmSt(d) {
+				//将报警状态设置为1 1就是报警
+				Stream_vol_flag[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] = 1;
+
+				if(d == 0) { //不报警
+					Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] = "0";
+				} else { //报警
+					Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] = "1";
+				}
+
+				//京东api ,控制设备，controlDevice数据写法
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST],
+						"current_value": Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST]
+					}]
+				}
+				//控制设备接口，写法固定，京东api
+				controlDevice(command, function(suc) {
+					//主页报警，消警函数
+					SetAlarmDisplaySt(d, 0);
+				});
+			};
+
+			//设置语言，初始化显示 大函数，调用多个函数执行，
+			function SetLangInfoDisplay() {
+				//语种选择非空
+				//语种选择
+				if(Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL] != null)
+					//语种选择，判断当前语种  lang_sel最开始是0
+					lang_sel = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL]);
+				if(lang_sel == null)
+					lang_sel = 0;
+				if(lang_sel >= LangSel_num)
+					lang_sel = 0;
+				//lang_former最开始等于负1
+				if(lang_former != lang_sel) {
+					StatusListBrush_info(); //刷新状态列表初始化		
+					initArmmodUI(); //警戒模式界面初始化
+					initMsgLevelPushUI(); //消息级别弹出界面
+					ProgressBrush_info(); //进度条刷新初始化
+					SwitchCheckBrush_info(); //刷新检测开关信息
+					KeyBoardBrush_info(); //刷新键盘状态
+					children_device(); //获取子设备信息     
+					BrushNoSubPage(); //看不懂 估计是刷新什么的
+					DisplayStatusBar(); //设置收缩状态栏的中英文
+					initHelpPage_Info(); //初始化更多选项卡函数中英文互换和上半部
+					initHelpPage_State(); //初始化帮助（更多）页面状态
+					initEventBar_Info(); //初始化报警/消警，事件记录信息
+					initHostState_Info(); //主机设备状态初始化
+					RefreshZoneLangDlgloaded(); //更多选项卡上半部分的内容刷新
+					RefreshEventRecordLoaded(); //事件记录弹出框 用于语言版本更换处理 刷新事件记录加载 
+					setBtnBottomTxtByLanguage(); //底部导航文本设置包含中英切换
+					InitReserve(); //预约布撤防初始化
+					if(add_title_flag == 1) { //条件判断
+						setHostTitle(titleArr[lang_sel][curPage]); //配置导航按钮title显示
+					}
+				}
+				lang_former = lang_sel; //改变变量 
+			}
+
+			function initMsgLevelPushUI() {
+				$("#msgLevel_list").empty();
+				var width = document.documentElement.clientWidth;
+				if(width > 640) {
+					width = 640;
+				}
+				if(width < 320) {
+					width = 320;
+				}
+				var border_width = 1;
+				var total_border_width = MsgLevelLang_def_cn.length * 2 * border_width - 2;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+				var str = "";
+				var i = 0;
+				for(i = 0; i < MsgLevelLang_def_cn.length; i++) {
+					if(i == 1) {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					} else {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-right:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					}
+					str += "<input onClick=\"MsgLevelSel(" + i + ")\" id=\"msg_level_sel_(" + i + ")\" class=\"radio\" name=\"msg_level_sel\" type=\"radio\" />";
+					str += "<label for=\"msg_level_sel_(" + i + ")\" class=\"trigger\"><em class=\"ico2" + (i + 1) + "\"></em><p id=\"msg_level_" + (i + 1) + "\"> </p></label>"
+					str += "</li>";
+				}
+				$("#msgLevel_list").append(str);
+				$("#msg_level_1").text(MsgLevelLang_def[lang_sel][0]);
+				$("#msg_level_2").text(MsgLevelLang_def[lang_sel][1]);
+				$("#msg_level_3").text(MsgLevelLang_def[lang_sel][2]);
+				i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL]);
+				if(i >= 3)
+					i = 0;
+				$("input:radio[name='msg_level_sel']").eq(i).attr("checked", true);
+			}
+
+			function initAlarmRecordUI() {
+
+				$("#alarmRecord_list").empty();
+
+				var width = document.documentElement.clientWidth;
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = MsgLevelLang_def_cn.length * 2 * border_width;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+
+				var str = "";
+				var i = 0;
+				for(i = 0; i < MsgLevelLang_def_cn.length; i++) {
+					str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+					str += "<input onClick=\"MsgLevelSel(" + i + ")\" id=\"msg_level_sel_(" + i + ")\" class=\"radio\" name=\"msg_level_sel\" type=\"radio\" />";
+					str += "<label for=\"msg_level_sel_(" + i + ")\" class=\"trigger\"><em class=\"ico2" + (i + 1) + "\"></em><p id=\"msg_level_" + (i + 1) + "\"> </p></label>"
+					str += "</li>";
+				}
+
+				$("#msgLevel_list").append(str);
+
+				$("#msg_level_1").text(MsgLevelLang_def[lang_sel][0]);
+				$("#msg_level_2").text(MsgLevelLang_def[lang_sel][1]);
+				$("#msg_level_3").text(MsgLevelLang_def[lang_sel][2]);
+
+				i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL]);
+				if(i >= 3)
+					i = 0;
+				$("input:radio[name='msg_level_sel']").eq(i).attr("checked", true);
+			}
+
+			function getClientWidth() {
+
+				var width = document.documentElement.clientWidth;
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				return width;
+			}
+
+			function getClientHeigth() {
+				var width = document.documentElement.clientHeight;
+				return width;
+			}
+
+			function initArmmodUI() {
+				$("#armmod_list").empty();
+
+				var width = document.documentElement.clientWidth;
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = ArmStLang_def_cn.length * 2 * border_width - 2;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+
+				var str = "";
+				var i = 0;
+				for(i = 0; i < ArmStLang_def_cn.length; i++) {
+					if(i == 1) {
+						var borderStr = "";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					} else {
+						var borderStr = "";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-right:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					}
+
+					//					str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+					str += "<input onClick=\"mode(" + (i + 1) + ")\" id=\"moshi_" + (i + 1) + "\" class=\"radio\" name=\"moshi\" type=\"radio\" />";
+					str += "<label for=\"moshi_" + (i + 1) + "\" class=\"trigger\"><em class=\"ico" + (i + 1) + "\"></em><p id=\"armst_" + (i + 1) + "\"> </p></label>";
+					str += "</li>";
+				}
+
+				$("#armmod_list").append(str);
+
+				$("#armst_1").text(ArmStLang_def[lang_sel][0]);
+				$("#armst_2").text(ArmStLang_def[lang_sel][1]);
+				$("#armst_3").text(ArmStLang_def[lang_sel][2]);
+
+				var i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST]);
+
+				if(i > 0) i--;
+				if(i >= 3) i = 0;
+
+				$("input:radio[name='moshi']").eq(i).attr("checked", true);
+			}
+
+			function DisplayArmSelDialogInfo() {
+				$("#dialog_alarm_tip").attr("title", statusBarDes[lang_sel][15]);
+
+				if(dialog_alarm_tip != null) {
+					dialog_alarm_tip.dialog("option", "title", statusBarDes[lang_sel][15]);
+
+					var cancle = statusBarDes[lang_sel][17];
+					var confirm = statusBarDes[lang_sel][16];
+					dialog_alarm_tip.dialog("option", "buttons", [{
+						text: confirm,
+						click: function() {
+							$(this).dialog("close");
+							modeDlgCmd(1, ArmSelArg);
+						}
+					}, {
+						text: cancle,
+						click: function() {
+							$(this).dialog("close");
+							modeDlgCmd(0, ArmSelArg);
+						}
+					}]);
+				}
+			}
+			//显示报警对话框信息（就是消警模态框）
+			function DisplayAlarmDialogInfo() {
+
+				if(dialog_message != null) {
+
+					//jq-ui函数，就是一个弹出遮罩层对话框
+					dialog_message.dialog("option", "title", statusBarDes[lang_sel][6]);
+
+					var silencer = statusBarDes[lang_sel][8];
+					dialog_message.dialog("option", "buttons", [
+
+						{
+							text: silencer,
+							click: function() {
+								$(this).dialog("close");
+								closeHostAlarm("1");
+							}
+						}
+					]);
+				}
+			}
+			//设置收缩状态栏的中英文
+			function DisplayStatusBar() {
+
+				$("#validateZT").text(statusBarDes[lang_sel][2]); //校正时区
+				$("#dateTimeValidate").text(statusBarDes[lang_sel][2]); //校正时区
+
+				$("#dialog_message p span:first").html(statusBarDes[lang_sel][4]); //对话框提示
+				DisplayAlarmDialogInfo();
+
+				$("#dialog_alarm_tip p span:first").html(statusBarDes[lang_sel][18]);
+				DisplayArmSelDialogInfo();
+
+				$(".ht60 h1").eq(0).text(statusBarDes[lang_sel][9]);
+				$(".ht60 h1").eq(1).text(statusBarDes[lang_sel][10]);
+			}
+
+			/**
+			 * 一直刷新数据
+			 */
+			function BrushInfoDisplay() {
+				var operate_code = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_OPERATE_CODE]);
+				date = new Date();
+				var i;
+
+				if(((date.getTime() - ctime) >= 8000) && (operate_code_former != operate_code)) {
+
+					operate_code_former = operate_code;
+					//					if((date.getTime() - ctime) >= 8000) {
+
+					var i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST]);
+					if(i > 0) i--;
+					if(i >= 3) i = 0;
+
+					$("input:radio[name='moshi']").eq(i).attr("checked", true);
+
+					//						$(".trigger").eq(i + 3).addClass("ui-checkboxradio-checked  ui-state-active");
+					//						$(".trigger").eq(lang_sel).addClass("ui-checkboxradio-checked  ui-state-active");
+					$(".armmod_state img").attr("src", armmod_state_img_arry[i]);
+
+					//消息推送选择
+					i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL]);
+					if(i >= 3) i = 0;
+					$("input:radio[name='msg_level_sel']").eq(i).attr("checked", true);
+
+					if(UserOpreatEn)
+						SetLangInfoDisplay();
+
+					//					InitProgress();
+					//					ProgressBrush_st();
+					SwitchCheckBrush_st();
+
+					SetAlarmDisplaySt(parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST]), parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER]));
+
+					ProgressBrush_st();
+					initHelpPage_State();
+
+					//if((alarm_click_time != 0) && ((date.getTime() - alarm_click_time) >= 8000)) { //防止用户手动触发报警 ui界面刷新异常
+					initEventBar_State();
+					//					}
+
+					currentMode = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST]);
+
+					for(var i = 0; i < Stream_vol_flag.length; i++) {
+						if(Stream_vol_flag[i] == 1) {
+							Stream_vol_flag[i] = 0;
+						}
+					}
+
+					RefreshReserve();
+				}
+				RefreshAlarmtime();
+
+				judgeTheAlarmState();
+				$("input:radio[name='lang']").eq(lang_sel).attr("checked", true);
+
+				StatusListBrush_st();
+
+				$("#itemState span").eq(1).text(statusBarDes[lang_sel][14]);
+
+				initHostState_State();
+				formatRecordLanguage();
+			}
+
+			/**
+			 *  刷新报警倒计时 
+			 */
+			function RefreshAlarmtime() {
+
+				draw(4, parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER]), progress_vol_max[4]);
+			}
+
+			/**
+			 * 判断报警主机是否报警
+			 */
+			function judgeTheAlarmState() {
+
+				if(alarmDialogFlag == 0) {
+					//initAlarmDialog();
+					//弹窗
+					if((last_alarm_state == 0) && (Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] == "1")) {
+						alarmDialogFlag = 1;
+						showAlarmDialog();
+						last_alarm_state = 1;
+					} else if((last_alarm_state == 1) && (Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] == "0")) {
+						last_alarm_state = 0;
+					}
+				}
+
+			}
+			/**
+			 * @param {Object} suc
+			 * @param {Object} mod  0：无限刷新;1:获取一次
+			 */
+			function ReadDataToBuf(suc, mod) {
+
+				var i = 0,
+					j;
+				var dt = eval(suc.streams);
+
+				if(!dt) {
+					return;
+				}
+
+				var langFlag = false;
+				// 解决JD提供的接口数据不及时更新的bug
+				var jumpValue = getLocalValueByKey("key_jump");
+				var langSelVal = getLocalValueByKey("key_langsel");
+
+				if(jumpValue != null && jumpValue != "" && jumpValue == "jump") {
+					
+				}
+
+				if(langSelVal != null && langSelVal != "" && langSelVal.length > 0) {
+					setLocalValueWithKey("key_langsel", "");
+					langFlag = true;
+				}
+
+				for(i = 0; i < dt.length; i++) {
+					for(j = 0; j < JDSTREAM_ID_NUM; j++) {
+						if((dt[i].stream_id == Stream_def[j]) && (dt[i].current_value)) {
+							if(Stream_vol_flag[j] == 1) {
+								continue;
+							}
+							if((langFlag == true) && (Stream_def[JDSTREAM_VOLINFO_PT_LANG_SEL] == dt[i].stream_id)) {
+								Stream_vol[j] = langSelVal;
+								langFlag = false;
+								//								DisplayDebugInfo(langSelVal.toString(), 16);
+								continue;
+							}
+
+							Stream_vol[j] = dt[i].current_value;
+						}
+					}
+				}
+
+				BrushInfoDisplay();
+
+				if(mod == 1) { //					last_alarm_state = Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST];
+
+					if(suc.shared_info) {
+						if(suc.shared_info.isShared) isfexiang = suc.shared_info.isShared;
+					}
+					if(suc.device) {
+						if(suc.device.feed_id) {
+							if(suc.device.feed_id) feedid = suc.device.feed_id;
+						}
+
+						//获得子设备数据
+						if(suc.device.device_name) {
+							shebei_name = suc.device.device_name;
+							titleArrCn.splice(2, 0, shebei_name);
+							titleArrEn.splice(2, 0, shebei_name);
+
+							add_title_flag = 1;
+							setHostTitle(titleArr[lang_sel][curPage]);
+
+						}
+
+						//						firstBar();
+
+						if(suc.device.main_sub_type) {
+							if(suc.device.main_sub_type == "1")
+								IsMainDev = 1;
+						}
+
+						if(suc.device.sub_devices) {
+							sub_devices_all = suc.device.sub_devices;
+							children_device();
+						}
+					}
+					$("#page_user").show();
+					//被注销掉了
+					//					InitProgress();
+					SwitchCheckInit();
+					StatusListInit();
+					KeyBoardInit();
+					initHostState();
+					initEventBar();
+					initHelpPage();
+
+					SetLangInfoDisplay();
+					getAlarmRecord("false"); //首次加载报警记录
+
+					initAlarmDialog();
+
+					currentMode = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST]);
+				}
+			};
+
+			function initAlarmDialog() {
+				//中英文标题 设置
+				$("#dialog_message").attr("title", statusBarDes[lang_sel][6]);
+				$("#dialog_alarm_tip").attr("title", statusBarDes[lang_sel][15]);
+
+				$("#dialog_message p span:first").html(statusBarDes[lang_sel][4]); //对话框提示
+				DisplayAlarmDialogInfo();
+
+				$("#dialog_alarm_tip p span:first").html(statusBarDes[lang_sel][18]);
+				DisplayArmSelDialogInfo();
+
+			}
+              //帮助（应该是更多）页面初始化，包含函数调用getClientWidth，initHelpPage_Info，（initHelpPage_State 初始化帮助（更多）页面状态）
+			function initHelpPage() {
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = 2 * 2 * border_width;
+				var li_width_pensent = (width - total_border_width) / 2.0;
+
+				$("#helpBtn_Bar").empty();
+				var str = "";
+
+				var i = 0;
+				for(i = 0; i < 4; i++) {
+
+					if(i == 3) {
+						str += "<li><em id=\"img_title\"></em><em id=\"img_right_arrow\"></em>";
+					} else if(i == 0) {
+						str += "<li id=\"li_help_page_item\"><em id=\"img_title\"></em><em id=\"img_right_arrow2\"></em>";
+					} else {
+						str += "<li id=\"li_help_page_item\"><em id=\"img_title\"></em><em id=\"img_right_arrow\"></em>";
+					}
+
+					if(i == 1) {
+						str += "<span id=\"span_txt_title1\">";
+					} else {
+						str += "<span id=\"span_txt_title\">";
+					}
+
+					//					str += textArray[lang_sel][i];
+					str += "</span>";
+					if(i == 1) {
+						str += "<span id=\"span_txt_content\" style=\"display:none\">";
+					} else {
+						str += "<span id=\"span_txt_content\">";
+					}
+					str += "</span>";
+					str += "</li>";
+				}
+
+				$("#helpBtn_Bar").append(str);
+
+				$("#helpBtn_Bar li").eq(0).css({
+					"z-index": "78"
+				});
+				$("#helpBtn_Bar li").eq(1).css({
+					"z-index": "78"
+				});
+
+				$("#helpBtn_Bar li #span_txt_content").eq(3).css({
+					"color": "#727474"
+				});
+				$("#helpBtn_Bar li #span_txt_title").eq(3).css({
+					"color": "#727474"
+				});
+
+				helpPageEnable = 1;
+				//初始化更多选项卡函数中英文互换和上半部（给内容，图片）
+				initHelpPage_Info();
+				  //初始化帮助（更多）页面状态（时区设置，语言设置的缓存载入）
+				initHelpPage_State();
+
+			}
+
+			function initHelpPage_Info() {
+				if(helpPageEnable != 1) {
+					return;
+				}
+
+				var imgArray = new Array(
+					"help_language.png",
+					"help_operation.png",
+					"help_time_validate.png",
+					"help_version.png"
+				);
+
+				var i = 0;
+				for(i = 0; i < 4; i++) {
+
+					if(i == 3) {
+						$("#helpBtn_Bar li span#span_txt_title").eq(2).text(textArray[lang_sel][i] + Stream_vol[JDSTREAM_VOLINFO_PT_DEBUG]);
+						$("#helpBtn_Bar li #span_txt_content").eq(i).text(textArray[lang_sel][i + 1] + "201704251320");
+					} else if(i == 1) {
+						$("#helpBtn_Bar li span#span_txt_title1").eq(0).text(textArray[lang_sel][i]);
+					} else if(i == 0) {
+						$("#helpBtn_Bar li span#span_txt_title").eq(0).text(textArray[lang_sel][i]);
+					} else if(i == 2) {
+						$("#helpBtn_Bar li span#span_txt_title").eq(1).text(textArray[lang_sel][i]);
+					}
+
+					$("#helpBtn_Bar li em#img_title").eq(i).css({
+						"background-image": "url(images/" + imgArray[i] + ")"
+					});
+
+					if(i == 0) {
+						$("#helpBtn_Bar li").eq(i).unbind('click').click(function() {
+							loadDlgs("language");
+
+						});
+
+					}
+
+					if(i == 1) {
+						$("#helpBtn_Bar li").eq(i).click(function() {
+							loadDlgs("opeDesBook");
+						});
+					}
+
+					if(i == 2) {
+						$("#helpBtn_Bar li").eq(i).click(function() {
+							loadDlgs("tiemZone");
+						});
+					}
+				}
+
+				i = 0;
+				for(i = 0; i < 4; i++) {
+
+					if(i == 0) {
+						$("#helpBtn_Bar li em#img_right_arrow2").eq(i).css({
+							"background": "url(images/arrow_right.png) no-repeat center"
+						});
+						continue;
+					}
+
+					if(i != 3) {
+						$("#helpBtn_Bar li em#img_right_arrow").eq(i - 1).css({
+							"background": "url(images/arrow_right.png) no-repeat center"
+						});
+						continue;
+					}
+				}
+			}
+
+			function initHelpPage_State() {
+				if(helpPageEnable != 1) {
+					return;
+				}
+
+				//计算时区
+				//				console.log(Stream_vol[JDSTREAM_VOLINFO_PT_DATE_TIME]);
+
+				var zoneValue = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DATE_TIME]) - 1440;
+				var zoneValueIndex = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL]);
+
+				//				console.log(zoneValue);
+				var currentZoneIndex = 0;
+				var i = 0;
+				for(i = 0; i < timeZoneIndexValue.length; i++) {
+					if(zoneValue == timeZoneIndexValue[i]) {
+						currentZoneIndex = i;
+						break;
+					}
+				}
+
+				var splitArr = timeZoneCn[currentZoneIndex].split(" ");
+
+				var i = 0;
+				for(i = 0; i < 4; i++) {
+					if(i == 0) {
+						$("#helpBtn_Bar li #span_txt_content").eq(i).text(languageDef[lang_sel]);
+					}
+
+					if(i == 2) {
+						//						$("#helpBtn_Bar li #span_txt_content").eq(i).text(splitArr[0]);
+						$("#helpBtn_Bar li #span_txt_content").eq(i).text(timeZone[lang_sel][zoneValueIndex]);
+					}
+				}
+			}
+
+			function initEventBar() {
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = 2 * 2 * border_width - 1;
+				var li_width_pensent = (width - total_border_width) / 2.0;
+
+				var btnIdArray = new Array(
+					"btn_alarm_disalarm",
+					"btn_event_record"
+				);
+
+				$("#hostEvent_Bar").empty();
+				var str = "";
+
+				var i = 0;
+				for(i = 0; i < 2; i++) {
+					//					str += "<button id="+btnIdArray[i]+">"+btnTextArray[lang_sel][i]+"</button>"
+					if(i == 1) {
+						str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;background-color: #FFFFFF;z-index:78;position:relative \">";
+						str += "<button id=" + btnIdArray[i] + "><span>" + "" + "</span></button>"
+					}
+
+					if(i == 0) {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#d4d9de " + border_width + "px solid;";
+
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+
+						//						str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+						str += "<button id=" + btnIdArray[i] + " onclick=\"SetAlarmDisplay()\"><span>" + "" + "</span></button>"
+					}
+					str += "</li>";
+				}
+
+				$("#hostEvent_Bar").append(str);
+
+				$("#hostEvent_Bar #btn_event_record").click(function() {
+
+					$("#alarmRecordDlg").show();
+					eventRecordLoaded();
+					if(alarmScroll) {
+						alarmScroll.scrollTo(0, 0);
+						alarmScroll.refresh();
+					}
+
+				});
+
+				hostEventBarEnabel = 1;
+				initEventBar_Info();
+				initEventBar_State();
+			}
+
+			function initEventBar_Info() {
+				if(hostEventBarEnabel != 1) {
+					return;
+				}
+				$("#hostEvent_Bar #btn_alarm_disalarm span").text(btnTextArray[lang_sel][0]);
+				$("#hostEvent_Bar #btn_event_record span").text(btnTextArray[lang_sel][1]);
+			}
+
+			function initEventBar_State() {
+				if(hostEventBarEnabel != 1) {
+					return;
+				}
+
+				SetAlarmDisplaySt(parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST]), parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER]));
+				//测试用
+			}
+
+			//主机的设备信息
+			function initHostState() {
+
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				var border_width = 1;
+				var total_border_width = 3 * 2 * border_width - 2;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+
+				$("#hostState_List").empty();
+				var str = "";
+
+				//border-color:#d4d9de
+
+				var i = 0;
+				for(i = 0; i < 3; i++) {
+					if(i == 1) {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					} else {
+						var borderStr = "";
+						borderStr += "border-top:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-bottom:#d4d9de " + border_width + "px solid;";
+						borderStr += "border-left:#eef2f7 " + border_width + "px solid;";
+						borderStr += "border-right:#eef2f7 " + border_width + "px solid;";
+						str += "<li style=\"width:" + li_width_pensent + "px;" + borderStr + "\">";
+					}
+
+					//					str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid;\">";
+					str += "<label style= \"position:relative\">";
+					str += "<em class=\"state_em_" + (i + 1) + "\"  style= \"position:absolute\" >";
+					str += "</em>";
+
+					str += "<p id=\"state_d_" + (i + 1) + "\" style= \"position:absolute; color:#898989;\">";
+					str += "描述";
+					str += "</p>";
+
+					str += "<p id=\"state_p_" + (i + 1) + "\" style= \"position:absolute; color:#0197D6;\">";
+					str += "文本";
+					str += "</p>";
+
+					str += "</label>";
+					str += "</li>";
+				}
+
+				$("#hostState_List").append(str);
+
+				hostStateEnabel = 1;
+				initHostState_Info();
+				initHostState_State();
+			}
+
+			function initHostState_Info() {
+				if(hostStateEnabel != 1) {
+					return;
+				}
+
+				if(lang_sel == 0) { //Chinese
+					$(".hostStateList li label p").css({
+						"left": "31%"
+					});
+
+					$(".hostStateList li label em").css({
+						"left": "4%"
+					});
+
+				} else { //English
+					$(".hostStateList li label p").css({
+						"left": "43%"
+					});
+
+					$(".hostStateList li label em").css({
+						"left": "11%"
+					});
+
+				}
+
+				var i = 0;
+				for(i = 0; i < 3; i++) {
+					if(i == 0) {
+						$(".hostStateList li label p#state_p_1").text(stateArrText[lang_sel][i] + Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_VOL]);
+						$(".hostStateList li label p#state_d_1").text(stateArrText[lang_sel][i + 3]);
+
+						continue;
+					}
+
+					if(i == 1) {
+						var k = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL]);
+						if(k >= 3) {
+							k = 0; //K是具体值
+						}
+
+						$(".hostStateList li label p#state_p_2").text(MsgLevelLang_def[lang_sel][k]);
+						$(".hostStateList li label p#state_d_2").text(stateArrText[lang_sel][i + 3]);
+						continue;
+					}
+
+					if(i == 2) {
+						var parseData = parseKplData4Recent(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]);
+						var parseDataArr = parseData.split("@");
+
+						$(".hostStateList li label p#state_p_3").text(parseDataArr[0]);
+						$(".hostStateList li label p#state_d_3").text(stateArrText[lang_sel][i + 3]);
+					}
+				}
+			}
+
+			var stateArrImg = new Array(
+				"images/state_no_sound.png",
+				"images/state_tuisong_all.png",
+				"images/state_menci.png",
+				"images/state_sound.png",
+				"images/all_msg_normal.png",
+				"images/alarm_msg_normal.png",
+				"images/silent_msg_normal.png"
+			);
+
+			function initHostState_State() {
+				if(hostStateEnabel != 1) {
+					return;
+				}
+
+				//图片
+				var i = 0;
+				for(i = 0; i < 3; i++) {
+
+					if(i == 0) {
+						if(Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_VOL] == "0") {
+							$(".hostStateList li label em").eq(i).css({
+								"background": "url(" + stateArrImg[i] + ") no-repeat center",
+								"background-size": "30px 30px"
+							});
+						} else {
+							$(".hostStateList li label em").eq(i).css({
+								"background": "url(" + stateArrImg[i + 3] + ") no-repeat center",
+								"background-size": "30px 30px"
+							});
+						}
+					}
+
+					if(i == 1) {
+						if(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL] == "0") {
+							$(".hostStateList li label em").eq(i).css({
+								"background": "url(" + stateArrImg[i + 3] + ") no-repeat center",
+								"background-size": "30px 30px"
+							});
+						}
+
+						if(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL] == "1") {
+							$(".hostStateList li label em").eq(i).css({
+								"background": "url(" + stateArrImg[i + 4] + ") no-repeat center",
+								"background-size": "30px 30px"
+							});
+						}
+
+						if(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL] == "2") {
+							$(".hostStateList li label em").eq(i).css({
+								"background": "url(" + stateArrImg[i + 5] + ") no-repeat center",
+								"background-size": "30px 30px"
+							});
+						}
+					}
+
+					if(i == 2) { //最近报警记录
+						var indexPng = getIndexByparseKplData(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]);
+						//						console.log(parseDataArr[0]);
+						$(".hostStateList li label em").eq(i).css({
+							"background": "url(images/ar/" + recent_alarm_record_img[indexPng] + ") no-repeat center",
+							"background-size": "30px 30px"
+						});
+					}
+
+				}
+
+				//值
+				for(i = 0; i < 3; i++) {
+					if(i == 0) {
+						$(".hostStateList li label p#state_p_1").text(stateArrText[lang_sel][i] + Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_VOL]);
+						continue;
+					}
+
+					if(i == 1) {
+						var k = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_MSG_LEVEL]);
+						if(k >= 3) {
+							k = 0; //K是具体值
+						}
+
+						$(".hostStateList li label p#state_p_2").text(MsgLevelLang_def[lang_sel][k]);
+						continue;
+					}
+
+					if(i == 2) {
+						var parseData = parseKplData4Recent(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]);
+						var parseDataArr = parseData.split("@");
+
+						$(".hostStateList li label p#state_p_3").text(parseDataArr[0]);
+					}
+				}
+			}
+			/**
+			 *  测试失败 
+			 */
+			function getAD810WifiHistory() {
+
+				var param = {
+					"start_time": "2016-10-27T00:00:00+0800",
+					"end_time": "2016-10-30T23:59:59+0800",
+					"count": 20,
+					"stream_id_array": ["eventinfo"]
+				};
+
+				JDSMART.io.getWifiHistory(
+					param,
+					function(suc) { //执行后的回调
+						console.log("getWifiHistorys():" + JSON.stringify(suc));
+					},
+					function(error) { //控制回调失败
+						toast(error.toString());
+					}
+				);
+			}
+
+			function initData(suc) {
+
+				var dt = new Date();
+				DisplayDebugInfo(dt + " " + ref_count + " " + JSON.stringify(suc), 2);
+				//				console.log(JSON.stringify(suc));
+
+				if(typeof(suc) == "string") {
+					suc = JSON.parse(suc);
+				}
+
+				if(suc.device) {
+					if(suc.device.status)
+						SetUserOpreatSt(suc.device.status); //设备在线状态 status=0 ：不在线 1：在线
+				}
+
+				ReadDataToBuf(suc, 1);
+			};
+
+			//刷新数据
+			function reflashData(suc) {
+
+				ref_count++;
+				var org = JSON.stringify(suc);
+
+				if(typeof(suc) == "string") {
+					suc = JSON.parse(suc);
+					var zoneValueIndex = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL]);
+
+					var zoneValue = Stream_vol[JDSTREAM_VOLINFO_PT_DATE_TIME];
+
+					var initTimeZone = [];
+					for(i = 0; i < timeZoneIndexValue.length; i++) {
+						if(timeZoneIndexValue[i] + 1440 == zoneValue) {
+							initTimeZone.push(i);
+						}
+					}
+					for(var q = 0; q < initTimeZone.length; q++) {
+						var a = initTimeZone[q];
+					}
+					if(initTimeZone.indexOf(zoneValueIndex) == -1) {
+						vol = initTimeZone[0];
+						$("#helpBtn_Bar li #span_txt_content").eq(2).text(timeZone[0][vol]);
+						var command = {
+							"command": [{
+								// 时区索引 26       第二次
+								"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL],
+								"current_value": vol
+							}]
+						}
+						
+						controlDevice(command, function(sucess) {
+
+						});
+					}
+
+				}
+
+				if(suc.status) SetUserOpreatSt(suc.status);
+				ReadDataToBuf(suc, 0);
+
+				var str = "";
+				//是27
+				for(j = 0; j < JDSTREAM_ID_NUM; j++) {
+					str += Stream_def[j];
+					str += ": ";
+					str += Stream_vol[j];
+					str += " / ";
+				}
+
+				DisplayDebugInfo("[" + ref_count + "]   " + str + "  [feedid]" + feedid + "  [name]" + shebei_name + "  [fexiang]" + isfexiang + "[js]" + org, 1);
+
+			};
+
+			//重置等待开始时间
+			function ResetWaitStartTime() {
+				cdate = new Date();
+				ctime = cdate.getTime();
+			}
+
+			function showTipDialog(arg) {
+				dialog_alarm_tip = $("#dialog_alarm_tip").dialog({
+					modal: true,
+					"buttons": {
+						"确定---": function() {
+							$(this).dialog("close");
+							modeDlgCmd(1, arg);
+						},
+						"取消---": function() {
+							$(this).dialog("close");
+							modeDlgCmd(0, arg);
+						}
+					}
+				});
+
+				ArmSelArg = arg;
+				DisplayArmSelDialogInfo();
+			}
+
+			function modeDlgCmd(isComfirm, arg) {
+				if(isComfirm == 1) { //确定
+
+					modeCmd(arg);
+
+					if(arg > 0)
+						arg--;
+					if(arg >= 3)
+						arg = 0;
+
+					$("input:radio[name='moshi']").eq(arg).attr("checked", true);
+					//					console.log(arg);
+
+				} else { //取消
+					var i = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST]);
+					if(i > 0) i--;
+					if(i >= 3) i = 0;
+
+					$("input:radio[name='moshi']").eq(i).attr("checked", true);
+				}
+			}
+
+			//真正的模式命令发送
+			function modeCmd(arg) {
+				//重置等待开始时间
+				ResetWaitStartTime();
+				var mod;
+				switch(arg) {
+					case 1:
+						mod = '1';
+						$(".armmod_state img").attr("src", "images/arm_b.png");
+						break;
+					case 2:
+						mod = '2';
+						$(".armmod_state img").attr("src", "images/home_b.png");
+						break;
+					case 3:
+						mod = '3';
+						$(".armmod_state img").attr("src", "images/disarm_b.png");
+						break;
+					default:
+						mod = '1';
+						$(".armmod_state img").attr("src", "images/arm_b.png");
+						break;
+				}
+
+				Stream_vol[JDSTREAM_VOLINFO_PT_ARM_ST] = mod;
+				currentMode = parseInt(mod);
+
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_ARM_ST],
+						"current_value": mod
+					}]
+				}
+				controlDevice(command, false);
+			}
+
+			function mode(arg) {
+
+				selectMode = arg;
+			
+				var i = currentMode;
+				
+
+				if(i == arg) { //和当前一样点击无效
+					return;
+				}
+
+				//等级高低的判断
+				if(i > arg) { //低向高
+					modeCmd(arg);
+					return;
+				}
+
+				if(i > 0) i--;
+				if(i >= 3) i = 0;
+				$("#current_alarm_mode b").text(ArmStLang_def[lang_sel][i]);
+
+				i = arg;
+				if(i > 0) i--;
+				if(i >= 3) i = 0;
+				$("#select_alarm_mode b").text(ArmStLang_def[lang_sel][i]);
+
+				showTipDialog(arg);
+
+			};
+
+			function SetLang(arg) {
+				//重置等待开始时间
+				ResetWaitStartTime();
+
+				Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL] = arg.toString();
+				Stream_vol_flag[JDSTREAM_VOLINFO_PT_LANG_SEL] = 1;
+				SetLangInfoDisplay();
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_LANG_SEL],
+						"current_value": Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL]
+					}]
+				}
+
+				controlDevice(command, false);
+				//注销掉
+				//				InitProgress();
+			};
+
+			function showPage(page) {
+				$("#page1").hide();
+				$("#page2").hide();
+				$("#page3").hide();
+				$("#page4").hide();
+				$("#page5").hide();
+				$("#page6").hide();
+				page = "#" + page;
+				$(page).show();
+			}
+
+			//添加设备函数
+			function addDieve() {
+				setLocalValueWithKey("key_jump", "jump");
+				setLocalValueWithKey("key_langsel", lang_sel.toString());
+				JDSMART.app.addSubDevice(function(suc) {});
+			}
+			//跳转子设备函数
+			function jumpDevice(data) {
+				setLocalValueWithKey("key_jump", "jump");
+				setLocalValueWithKey("key_langsel", lang_sel.toString());
+				JDSMART.app.jumpSubDevice(data, function(suc) {});
+			}
+
+			function BrushNoSubPage() {
+				$("#page1 .equip").empty();
+				$("#page1 .equip").append(UserLang_def[lang_sel][8] + UserLang_def[lang_sel][3]);
+			}
+
+			//获取子设备信息
+			function children_device() {
+				if(IsMainDev != 1) {
+					showPage("page3");
+					return;
+				}
+
+				BrushNoSubPage();
+
+				if(sub_devices_all) {
+					if(sub_devices_all.length > 0) {
+						update_bufangzhuangtai();
+					} else {
+						showPage("page1");
+					}
+				} else {
+					toast(UserLang_def[lang_sel][0]);
+					showPage("page1");
+				}
+			}
+
+			function LangAutoCov(name, ser) {
+				LangAutoCov_Succeed = 0;
+				for(var sel = 0; sel < LangSel_num; sel++) {
+					var name_a = SubNameEx_def[sel][ser];
+					var len_a = name_a.length;
+					var name_b = name;
+					var len_b = name_b.length;
+					if(len_b >= len_a) {
+						var name_c = name_b.substr(0, len_a);
+						if(name_a == name_c) {
+							if(SubNameEx_def_num != ser) name = SubNameEx_def[lang_sel][ser] + name_b.substr(len_a, (len_b - len_a));
+							else name = name_b.substr(len_a, (len_b - len_a));
+
+							sel = LangSel_num;
+							LangAutoCov_Succeed = 1;
+						}
+					}
+				}
+				return name;
+			}
+
+			//布防状态更新
+			function update_bufangzhuangtai() {
+				DisplayDebugInfo("SUB:" + JSON.stringify(sub_devices_all), 4);
+				var str_li = "";
+				var arr_home = [];
+				for(var i = 0; i < sub_devices_all.length; i++) {
+					var parse = sub_devices_all[i]; //自设备
+					var child_device = parse.device.device_id;
+					var child_uuid = parse.product.product_uuid;
+					arr_home.push(child_device);
+
+					var sub_mac = parse.device.device_id;
+					var sub_type = sub_mac.substr(10, 2);
+
+					var sub_type_ex = 1;
+					var img_pud = parse.product.p_img_url;
+
+					var name = parse.device.device_name;
+
+					if(sub_mac.substr(0, 2) == "KP") {
+						for(var ser = 0; ser < SubNameEx_def_num; ser++) {
+							if(SubNameEx_type_code[ser] == sub_type) {
+								name = LangAutoCov(name, ser);
+								sub_type_ex = 0;
+								ser = SubNameEx_def_num;
+							}
+
+						}
+					}
+
+					if(sub_type_ex) {
+						name = LangAutoCov(name, SubNameEx_def_num);
+
+						if(LangAutoCov_Succeed == 1) {
+							LangAutoCov_Succeed = 0;
+
+							for(var ser = 0; ser < SubNameEx_def_num; ser++) {
+								if(SubNameEx_type_code[ser] == sub_type) {
+									name = SubNameEx_def[lang_sel][ser] + name;
+									LangAutoCov_Succeed = 1;
+
+									img_pud = "images/" + SubNameExUrl_def[ser];
+
+									ser = SubNameEx_def_num;
+								}
+							}
+
+							if(LangAutoCov_Succeed == 0) {
+								name = SubNameEx_def[lang_sel][0] + name;
+								img_pud = "images/" + SubNameExUrl_def[0];
+							}
+						}
+					}
+
+
+					var sub_st = parse.device.status;
+					var sub_info;;
+					if(sub_st == 1)
+						sub_info = UserLang_def[lang_sel][6];
+					else
+						sub_info = UserLang_def[lang_sel][7];
+
+					if(parseInt(isfexiang) != 0) { //非分享
+						if((i == sub_devices_all.length - 1) && (i % 2 != 1)) { //双
+							str_li = str_li + "<li style=\"border-bottom: 0px;\" onClick=jumpDevice('" + parse.device.feed_id + "')><img src='" + img_pud + "'>" + " <h4>" + testAuto(name, 14) + sub_info;
+						} else {
+							str_li = str_li + "<li onClick=jumpDevice('" + parse.device.feed_id + "')><img src='" + img_pud + "'>" + " <h4>" + testAuto(name, 14) + sub_info;
+						}
+					} else { //分享
+						if((i == sub_devices_all.length - 1) && (i % 2 == 1)) { //单
+							str_li = str_li + "<li style=\"border-bottom: 0px;\" onClick=jumpDevice('" + parse.device.feed_id + "')><img src='" + img_pud + "'>" + " <h4>" + testAuto(name, 14) + sub_info;
+						} else {
+							str_li = str_li + "<li onClick=jumpDevice('" + parse.device.feed_id + "')><img src='" + img_pud + "'>" + " <h4>" + testAuto(name, 14) + sub_info;
+						}
+					}
+				}
+
+				$("#page2 .equip").empty();
+
+				if(parseInt(isfexiang) != 0) {
+					str_li = UserLang_def[lang_sel][2] + UserLang_def[lang_sel][3] + str_li;
+				} else {
+					str_li = UserLang_def[lang_sel][2] + str_li;
+				}
+
+				$("#page2 .equip").append(str_li);
+				$("#online_device").text(UserLang_def[lang_sel][4] + sub_devices_all.length + UserLang_def[lang_sel][5]);
+
+				DisplayDebugInfo("网关子设备", 8);
+				showPage("page2");
+			}
+
+			function firstBar() {
+				var param = {
+					"what": [
+						"button1",
+						"button4"
+					],
+					"display": [
+						"drawable_back",
+						"drawable_setting"
+					],
+					"callBackName": [
+						"clos_bar",
+						"setting"
+					]
+				};
+				JDSMART.util.configActionBar(param);
+			}
+
+			function setting() {
+			
+			}
+
+			function clos_bar() {
+		
+				JDSMART.util.closeWindow();
+			}
+
+			//截取字符串
+			function testAuto(thisId, needLeng) {
+				var nowWord = thisId;
+				var nowLeng = thisId.length;
+				if(nowLeng > needLeng) {
+					nowWord = thisId.substr(0, needLeng) + '...';
+				}
+				return nowWord;
+			}
+
+			function ProgressBrush_info() {
+				if(progress_brush_en != 1)
+					return;
+				
+				var i = 0;
+				for(i = 0; i < Progress_name_num_def; i++) {
+					$("h1#progress_h1_title span#progress_span_title").eq(i).text(StreamIDLang_def[lang_sel][progress_vol_id_sel[i]]);
+				}
+			}
+
+		
+			function ProgressBrush_st() {
+				if(progress_brush_en != 1)
+					return;
+
+				var i = 0;
+				var upvalue = 0;
+				var downvalue = 0;
+				for(i = 0; i < Progress_name_num_def; i++) {
+					if(progress_show[i] == 1) {
+						$("#inputValue" + i).attr("value", "" + Stream_vol[progress_vol_id_sel[i]]);
+					
+						$("#outputValue" + i).text(Stream_vol[progress_vol_id_sel[i]]);
+
+						
+						upvalue = parseInt(Stream_vol[progress_vol_id_sel[i]]) / progress_vol_max[i] * (progressWidth - 28) + 14;
+						downvalue = parseInt(Stream_vol[progress_vol_id_sel[i]]) / progress_vol_max[i] * (progressWidth - 28);
+
+						
+						if(parseInt(Stream_vol[progress_vol_id_sel[i]]) == 0) {
+							downvalue = parseInt(Stream_vol[progress_vol_id_sel[i]]) / progress_vol_max[i] * (progressWidth - 28);
+						}
+						if(progress_vol_max[i] == parseInt(Stream_vol[progress_vol_id_sel[i]])) {
+							downvalue = parseInt(Stream_vol[progress_vol_id_sel[i]]) / progress_vol_max[i] * (progressWidth - 28);
+						}
+
+						$("#js-example-change-value" + i + " div.rangeslider__fill").css("width", upvalue + "px");
+						$("#js-example-change-value" + i + " div.rangeslider__handle").css("left", downvalue + "px");
+
+					}
+				}
+			}
+
+			function ProgressBrush() {
+				ProgressBrush_info();
+				ProgressBrush_st();
+			}
+
+			function setProgress(progress_id, handler, current_value, max) {
+				var handle = $("#" + handler);
+				$("#" + progress_id).slider({
+					create: function() {
+					
+						handle.text($(this).slider("value"));
+					},
+					slide: function(event, ui) {
+					
+						handle.text(ui.value);
+						sendProgressCmd(progress_id, ui.value);
+					},
+
+					min: 0,
+					value: current_value,
+					max: max,
+					orientation: "horizontal",
+					range: "min",
+					animate: true
+
+				});
+
+				$("#" + progress_id).slider({
+					change: function(event, ui) {
+						//真正监听鼠标离开的事件   只是注释下面这行
+					}
+				});
+
+				///懒省事
+				if(btn_validateZT == null) {
+					btn_validateZT = $("#validateZT").button();
+					$("#validateZT").click(function(event) {
+						SyncDateTime();
+					});
+				}
+
+			}
+			/**
+			 * 关闭报警
+			 * @param {Object} state 0:不关闭继续报警 
+			 * 					     1:关闭报警
+			 */
+			//关闭主机报警
+			function closeHostAlarm(state) {
+				if(state == "0") { //不管 继续报警
+					//					$("#closeAlarm").show();
+				} else if(state == "1") { //关闭报警   
+					//					$("#closeAlarm").hide();
+					//发送关闭报警命令
+					sendCloseAlarmCmd("", "0");
+					Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST] = "0";
+
+					SetAlarmDisplaySt(parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST]), parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER]));
+				}
+			}
+			//发送关闭报警命令
+			function sendCloseAlarmCmd(sel, vol) {
+				//重置等待开始时间
+				ResetWaitStartTime();
+				//数据格式转字符串。
+				vol = vol.toString();
+				//京东方法，控制设备
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_DEF_ALARM_ST],
+						"current_value": vol
+					}]
+				}
+				controlDevice(command, function(sucess) {
+					//					$("#closeAlarm").hide();
+				});
+			};
+			// 发送进度条命令
+			function sendProgressCmd(progress_id, value) {
+				for(var i = 0; progressIDs.length; i++) {
+					if(progressIDs[i] == progress_id) {
+						//进度条发送命令
+						ProgressSendCmd(i, value);
+						break;
+					}
+				}
+			}
+
+			/**
+			 * 将value 转换成 level  
+			 * @param {Object} functionIndex  类型标识  0-7
+			 * @param {Object} value  0~999 具体值看 参数functionIndex 
+			 */
+			//获取???级别
+			function getTransitionValueToLevel(functionIndex, value) {
+				var compareArry;
+
+				switch(functionIndex) {
+					case 0: //音量
+						compareArry = vol_level;
+						break;
+					case 1: //报警时长
+						compareArry = alarm_time_level;
+						break;
+					case 3: //进入延时
+						compareArry = enter_later_level;
+						break;
+					case 5: //退出延时
+						compareArry = out_later_level;
+						break;
+
+					default:
+						compareArry = vol_level;
+						break;
+				}
+
+				if(value < 0) {
+					return 1;
+				}
+
+				var level = 1;
+				var i = 1;
+				for(i = 1; i < level_num; i++) {
+					if((value >= compareArry[i - 1]) && (value < compareArry[i])) {
+						level = i;
+						break;
+					}
+				}
+
+				if(value == compareArry[level_num - 1]) {
+					level = 10;
+				}
+
+				return level;
+			}
+
+			function getTransitionLevelToValue(functionIndex, level) {
+				var compareArry;
+
+				switch(functionIndex) {
+					case 0: //音量
+						compareArry = vol_level;
+						break;
+					case 1: //报警时长
+						compareArry = alarm_time_level;
+						break;
+					case 3: //进入延时
+						compareArry = enter_later_level;
+						break;
+					case 5: //退出延时
+						compareArry = out_later_level;
+						break;
+
+					default:
+						compareArry = vol_level;
+						break;
+				}
+
+				//1~10
+				if(level > 11) {
+					level = 10;
+				}
+
+				if(level < 1) {
+					level = 1;
+				}
+
+				return compareArry[level - 1];
+			}
+
+			function timedCount() {
+
+				t = setTimeout("timedCount()", 1000);
+				countDown += 1;
+
+				if(countDown > 1) {
+					stopCount();
+					console.log("发命令");
+				}
+			}
+
+			function stopCount() {
+				if(typeof t == "undefined")
+					return;
+
+				countDown = 0;
+				clearTimeout(t);
+			}
+
+			/**
+			 * @param {Object} parm  格式标识  "6#1"
+			 * @param {Object} level 值 最好是String类型
+			 */
+			//进度条命令发送新的
+			function progressCmdSendNew(parm) {
+
+				parm = parm.toString(); //强制类型转换
+				var arry = parm.split("#"); //将字符串按照#分割成数组
+				var functionIndex = parseInt(arry[0]); //变量赋值
+
+				//作等级判断  获取最真实的值
+				//var level_value = getTransitionLevelToValue(functionIndex, level);
+
+				var addBtn = parseInt(arry[1]); //0 是减  ;1代表加
+				//getTransitionValueToLevel(i, Stream_vol[progress_vol_id_sel[i]])
+				//当前的level 并未更改
+
+				var level = $("#" + progressHandler[functionIndex] + " #itemState span").eq(0).text();
+
+				if((typeof level) === "string") {
+					level = parseInt(level);
+				}
+				if(addBtn == 1) {
+					level += 1;
+				}
+				if(level > 10) {
+					level = 10;
+					toast("级别已最大");
+					//					alert("当前级别已最大");
+				}
+
+				if(addBtn == 0) {
+					level -= 1;
+				}
+				if(level < 1) {
+					level = 1;
+					toast("级别已最小");
+					//					alert("当前级别已最小");
+				}
+
+				$("#" + progressHandler[functionIndex] + " #itemState span").eq(0).text(level);
+
+				var level_value = getTransitionLevelToValue(functionIndex, level);
+
+				sendProgressCmd(progressIDs[functionIndex], level_value);
+			}
+			//获取#item的高
+			function getBodyWidth() {
+				var itemWidth = $("#item").width();
+				return itemWidth;
+			}
+
+			//进度条刷新
+			function InitProgress() {
+				progress_vol_id_sel[0] = JDSTREAM_VOLINFO_PT_SYS_VOL;
+				progress_vol_id_sel[1] = JDSTREAM_VOLINFO_PT_BEEP_VOL;
+				progress_vol_id_sel[2] = JDSTREAM_VOLINFO_PT_DOORBELL_VOL;
+
+				progress_vol_id_sel[3] = JDSTREAM_VOLINFO_PT_ALARM_TIME;
+				progress_vol_id_sel[4] = JDSTREAM_VOLINFO_PT_BEEP_TIME_OVER;
+				progress_vol_id_sel[5] = JDSTREAM_VOLINFO_PT_INTO_DELAY;
+				progress_vol_id_sel[6] = JDSTREAM_VOLINFO_PT_INTO_TIME_OVER;
+				progress_vol_id_sel[7] = JDSTREAM_VOLINFO_PT_EXIT_DELAY;
+				progress_vol_id_sel[8] = JDSTREAM_VOLINFO_PT_EXIT_TIME_OVER;
+
+				//删除相关标签的内容
+				$("#draw_progress_all .draw_progress").empty();
+				var prs = "";
+				var i = 0;
+				for(i = 0; i < Progress_name_num_def; i++) {
+
+					if(progress_show[i] == 1) {
+						prs += '<div id="" style="background-color:#eef2f7;height: 30px;line-height: 30px;">'
+						var str1 = "";
+						if(i == 3) {
+							str1 = "<em id=\"progress_img_title\" style=\"background-image: url(images/zhong.png);\"></em>";
+						} else {
+							str1 = "<em id=\"progress_img_title\" style=\"background-image: url(images/laba.png);\"></em>";
+						}
+
+						var str2 = "<span id=\"progress_span_title\"></span>"
+
+						prs += "<h1 style=\"text-indent:2em\"  id=\"progress_h1_title\" >" + str1 + str2 + "</h1>";
+						prs += '</div>';
+
+						prs += "<div id=\"js-example-change-value" + i + "\"   style=\"display:block;height: 70px;line-height:23px;margin-left:4%;margin-right: 4%;\">";
+					} else {
+						prs += "<div id=\"js-example-change-value" + i + "\"   style=\"display:none\">";
+					}
+					//						
+					prs += "<center><output id=\"outputValue" + i + "\"  style=\"color:#0096D5;font-size:18px;position:relative;top:10px\"></output></center>";
+					prs += "<input type=\"range\" min=\"0\" max=" + progress_vol_max[i] + " value=\"50\" data-rangeslider id=\"inputValue" + i + "\">";
+					prs += "</div>";
+				}
+				//加了根虚拟的progressbar  索引1开始
+				$("#draw_progress_all .draw_progress").append(prs);
+
+				//获取页面本身
+				var $document = $(document);
+				//字符串
+				var selector = '[data-rangeslider]';
+				var $inputRange = $(selector);
+
+				function valueOutput(element) {
+					var value = element.value;
+					var output = element.parentNode.getElementsByTagName('output')[0];
+
+					output.innerHTML = value;
+				}
+
+				for(var i = $inputRange.length - 1; i >= 0; i--) {
+					valueOutput($inputRange[i]);
+				};
+
+				$document.on('input', selector, function(e) {
+					valueOutput(e.target);
+				});
+
+				$inputRange.rangeslider({
+					polyfill: false
+				});
+
+				progress_brush_en = 1;
+
+				var js_rangeslider_0 = $("#js-rangeslider-0");
+				if(js_rangeslider_0) {
+					progressWidth = parseInt(js_rangeslider_0.width());
+					//										console.log("总宽度:" + progressWidth+"@@元素:"+js_rangeslider_0);
+				}
+
+				//给sliderBar 绑定触摸事件
+				var i = 0;
+				for(i = 0; i < Progress_name_num_def; i++) {
+					if(progress_show[i] == 1) {
+
+						//touchend    mouseup
+						$("#js-example-change-value" + i + " div..rangeslider").bind("touchend", {
+							parm_i: i
+						}, function(event) {
+
+							var handleWidth = parseInt($("#js-example-change-value" + event.data.parm_i + " div..rangeslider__handle").css('left'));
+							var cv = handleWidth * progress_vol_max[event.data.parm_i] / (progressWidth - 28);
+							var cvStr = Math.round(cv);
+
+							if(cvStr < 0) {
+								cvStr = 0;
+							}
+							if(cvStr > progress_vol_max[event.data.parm_i]) {
+								cvStr = progress_vol_max[event.data.parm_i];
+							}
+							cvStr = cvStr.toString();
+
+							$("#inputValue" + event.data.parm_i).attr("value", "" + cvStr);
+							$("#outputValue" + event.data.parm_i).text(cvStr);
+
+							//							console.log(cvStr);
+							ProgressSendCmd(event.data.parm_i, cvStr);
+						});
+					}
+				}
+
+				ProgressBrush();
+			}
+
+			//初始化项目
+			function initItems() {
+				var itemWidth = getClientWidth();
+
+				itemWidth = itemWidth - 6;
+				var width = itemWidth / 3;
+				width += "px"; //获取宽度
+
+				//				$("#"+progressHandler[0] + " #item div:eq(0)")
+
+				//数组遍历，css样式添加。
+				var i = 0;
+				for(i = 0; i < progressHandler.length; i++) {
+					$("#" + progressHandler[i] + " #item div:eq(0)").css({
+						"width": width,
+						"border": "grey 1px solid"
+					});
+					$("#" + progressHandler[i] + " #item div:eq(1)").css({
+						"width": width,
+						"border": "grey 1px solid"
+					});
+					$("#" + progressHandler[i] + " #item div:eq(2)").css({
+						"width": width,
+						"border": "grey 1px solid"
+					});
+				}
+			}
+
+			//这个什么都没有，估计是要加功能的
+			function reSetProgressUI() {
+
+			}
+
+			/**
+			 * 倒计时的逻辑
+			 * @param {Object} sel  index
+			 * @param {Object} vol  当前具体值
+			 * @param {Object} step  最大值
+			 */
+			//倒计时？？
+			function draw(sel, vol, step) {
+
+				progress_draw_vol[sel] = vol; //值的刷新
+				//倒计时
+				if(progress_draw_vol[sel] >= 10) $("#alaremtime_span_cls").text(statusBarDes[lang_sel][3] + vol + " s"); //$(".alaremtime_span_cls").text(statusBarDes[lang_sel][3] + vol + " s");
+				else $("#alaremtime_span_cls").text("...");
+			}
+
+			//圆矩形， canves内容
+			function roundRect(ctx, x, y, width, height, radius) { //canves相关   
+				ctx.beginPath(); //开始创建路劲
+				ctx.moveTo(x + radius, y); //绘制直线，起点
+				ctx.lineTo(x + width - radius, y); //终点坐标
+
+				//绘制圆，6个参数，第一个为圆形起点横坐标，第二个为圆形起点纵坐标，第三个为半径
+				//第四个为开始角度，第五个为结束角度，最后一个为是否逆时针（是个布尔值）
+				ctx.arc(x + width - radius, y + radius, radius, -Math.PI / 2, Math.PI / 2, false);
+
+				ctx.lineTo(x + radius, y + height); //再来根直线
+				ctx.arc(x + radius, y + radius, radius, Math.PI / 2, 3 * Math.PI / 2, false); //在画个园
+				ctx.closePath(); //关闭路径
+				ctx.fill(); //填充图形。
+			}
+
+			//圆形插入矩形
+			function roundInsetRect(ctx, x, y, width, height, radius) {
+				ctx.beginPath(); //开始路劲
+				// Draw huge anti-clockwise box
+				ctx.moveTo(1000, 1000); //起点坐标
+				ctx.lineTo(1000, -1000);
+				ctx.lineTo(-1000, -1000);
+				ctx.lineTo(-1000, 1000);
+				ctx.lineTo(1000, 1000); //绘制了1个大矩形，逆时针开始化
+				ctx.moveTo(x + radius, y); //再来起点
+				ctx.lineTo(x + width - radius, y); //经过这个点
+				ctx.arc(x + width - radius, y + radius, radius, -Math.PI / 2, Math.PI / 2, false); //1个园
+				ctx.lineTo(x + radius, y + height); //终点
+				ctx.arc(x + radius, y + radius, radius, Math.PI / 2, 3 * Math.PI / 2, false); //画圆
+				ctx.closePath(); //结束路径
+				ctx.fill(); //填充图形
+			}
+
+			//进度条层的矩形 
+			function progressLayerRect(sel, ctx, x, y, width, height, radius) {
+				ctx.save();
+				// Set shadows to make some depth  设置阴影，给样式
+				ctx.shadowOffsetX = 2;
+				ctx.shadowOffsetY = 2;
+				ctx.shadowBlur = 5;
+				ctx.shadowColor = '#666';
+
+				// Create initial grey layer  创建初始灰度层
+				if(progress_write_en[sel] == 1) ctx.fillStyle = 'rgba(189,189,189,1)';
+				else ctx.fillStyle = 'rgba(130,189,130,1)';
+				roundRect(ctx, x, y, width, height, radius);
+
+				// Overlay with gradient
+				ctx.shadowColor = 'rgba(0,0,0,0)'
+				var lingrad = ctx.createLinearGradient(0, y + height, 0, 0);
+				lingrad.addColorStop(0, 'rgba(255,255,255, 0.1)');
+				lingrad.addColorStop(0.4, 'rgba(255,255,255, 0.7)');
+				lingrad.addColorStop(1, 'rgba(255,255,255,0.4)');
+				ctx.fillStyle = lingrad;
+				roundRect(ctx, x, y, width, height, radius);
+
+				ctx.fillStyle = 'white';
+				//roundInsetRect(ctx, x, y, width, height, radius);
+
+				ctx.restore();
+			}
+
+			function progressBarRect(ctx, x, y, width, height, radius, max) {
+				// var to store offset for proper filling when inside rounded area
+				var offset = 0;
+				ctx.beginPath();
+				if(width < radius) {
+					offset = radius - Math.sqrt(Math.pow(radius, 2) - Math.pow((radius - width), 2));
+					ctx.moveTo(x + width, y + offset);
+					ctx.lineTo(x + width, y + height - offset);
+					ctx.arc(x + radius, y + radius, radius, Math.PI - Math.acos((radius - width) / radius), Math.PI + Math.acos((radius - width) / radius), false);
+				} else if(width + radius > max) {
+					offset = radius - Math.sqrt(Math.pow(radius, 2) - Math.pow((radius - (max - width)), 2));
+					ctx.moveTo(x + radius, y);
+					ctx.lineTo(x + width, y);
+					ctx.arc(x + max - radius, y + radius, radius, -Math.PI / 2, -Math.acos((radius - (max - width)) / radius), false);
+					ctx.lineTo(x + width, y + height - offset);
+					ctx.arc(x + max - radius, y + radius, radius, Math.acos((radius - (max - width)) / radius), Math.PI / 2, false);
+					ctx.lineTo(x + radius, y + height);
+					ctx.arc(x + radius, y + radius, radius, Math.PI / 2, 3 * Math.PI / 2, false);
+				} else {
+					ctx.moveTo(x + radius, y);
+					ctx.lineTo(x + width, y);
+					ctx.lineTo(x + width, y + height);
+					ctx.lineTo(x + radius, y + height);
+					ctx.arc(x + radius, y + radius, radius, Math.PI / 2, 3 * Math.PI / 2, false);
+				}
+				ctx.closePath();
+				ctx.fill();
+
+				// draw progress bar right border shadow
+				if(width < max - 1) {
+					ctx.save();
+					ctx.shadowOffsetX = 1;
+					ctx.shadowBlur = 1;
+					ctx.shadowColor = '#666';
+					if(width + radius > max)
+						offset = offset + 1;
+					ctx.fillRect(x + width, y + offset, 1, total_height - offset * 2);
+					ctx.restore();
+				}
+			}
+
+			function progressText(sel, ctx, x, y, width, height, radius, max, vol) {
+				ctx.save();
+				if(progress_write_en[sel] == 1) ctx.fillStyle = 'white';
+				else ctx.fillStyle = 'rgba(255,100,100,1)';
+				var text = vol; //Math.floor(width/max*100)+"%";
+				var text_width = ctx.measureText(text).width;
+				var text_x = x + width - text_width - radius / 2;
+				if(width <= radius + text_width) {
+					text_x = x + radius / 2;
+				}
+				ctx.fillText(text, text_x, y + 22);
+				ctx.restore();
+			}
+
+			function ProgressAutoSubt() {
+
+				var sel = 0;
+				for(sel = 0; sel < Progress_name_num_def; sel++) {
+					if(progress_auto_subt_en[sel] == 1) {
+						if(progress_draw_vol[sel] > 0) {
+							progress_draw_vol[sel]--;
+							draw(sel, progress_draw_vol[sel], progress_vol_max[sel]);
+						}
+					}
+				}
+
+			}
+
+			function ProgressSendCmd(sel, vol) {
+
+				ResetWaitStartTime();
+				vol = vol.toString();
+
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[progress_vol_id_sel[sel]],
+						"current_value": vol
+					}]
+				}
+				controlDevice(command, false);
+			};
+
+			// 时区同步
+			function SyncDateTime(p_timezone) {
+				Stream_vol[JDSTREAM_VOLINFO_PT_DATE_TIME] = p_timezone + 1440 + "";
+				Stream_vol_flag[JDSTREAM_VOLINFO_PT_DATE_TIME] = 1;
+
+				var d = new Date();
+
+				var tz = p_timezone + (60 * 24);
+				tz = tz.toString();
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_DATE_TIME],
+						//                        "current_value":GetFormatDate("yyyy-MM-dd HH:Mm:SS")
+						"current_value": tz
+					}]
+				}
+				controlDevice(command, false);
+			};
+
+			//格式化CST日期的字串
+			//var strDate = "Tue Jul 16 01:07:00 CST 2013";
+			function formatCSTDate(strDate, format) {
+				return formatDate(new Date(strDate), format);
+			}
+
+			function GetFormatDate(format) {
+				return formatDate(new Date(), format);
+			}
+
+			//格式化日期,
+			function formatDate(date, format) {
+				var paddNum = function(num) {
+					num += "";
+					return num.replace(/^(\d)$/, "0$1");
+				}
+				//指定格式字符
+				var cfg = {
+					yyyy: date.getFullYear() //年 : 4位
+						,
+					yy: date.getFullYear().toString().substring(2) //年 : 2位
+						,
+					M: date.getMonth() + 1 //月 : 如果1位的时候不补0
+						,
+					MM: paddNum(date.getMonth() + 1) //月 : 如果1位的时候补0
+						,
+					d: date.getDate() //日 : 如果1位的时候不补0
+						,
+					dd: paddNum(date.getDate()) //日 : 如果1位的时候补0
+						,
+					hh: date.getHours() //时
+						,
+					mm: date.getMinutes() //分
+						,
+					ss: date.getSeconds() //秒
+						,
+					HH: paddNum(date.getHours()) //时
+						,
+					Mm: paddNum(date.getMinutes()) //分
+						,
+					SS: paddNum(date.getSeconds()) //秒
+				}
+				format || (format = "yyyy-MM-dd HH:Mm:SS");
+				return format.replace(/([a-z])(\1)*/ig, function(m) {
+					return cfg[m];
+				});
+			}
+
+			//------------------------------------
+
+			function SwitchCheck(sel) {
+				if(SwitchCheckBrushEn != 1) return;
+
+				//document.getElementById("debug_infos").innerHTML="xxxxx";
+				var st = 0;
+				if(switch_checkbox[sel].checked) st = 1;
+				$("#debug_infos").text("SwitchCheck " + sel + " " + st);
+
+				SwitchCheckSendCmd(sel, st);
+
+			}
+
+			function SwitchCheckSendCmd(sel, vol) {
+				ResetWaitStartTime();
+
+				vol = vol.toString();
+
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[switch_check_id_sel[sel]],
+						"current_value": vol
+					}]
+				}
+				controlDevice(command, false);
+			};
+
+			function SwitchCheckBrush_info() {
+				if(SwitchCheckBrushEn != 1) return;
+
+				for(i = 0; i < SwitchCheckNum_def; i++) {
+					$("#switch_name_" + i).text(StreamIDLang_def[lang_sel][switch_check_id_sel[i]]);
+				}
+			}
+
+			function SwitchCheckBrush_st() {
+				if(SwitchCheckBrushEn != 1)
+					return;
+
+				for(i = 0; i < SwitchCheckNum_def; i++) {
+					var st = parseInt(Stream_vol[switch_check_id_sel[i]]);
+					if(st != 0) {
+						switch_checkbox[i].checked = true;
+					} else {
+						switch_checkbox[i].checked = false;
+					}
+				}
+			}
+
+			function SwitchCheckBrush() {
+
+			}
+
+			function SwitchCheckInit() {
+
+				switch_check_id_sel[0] = JDSTREAM_VOLINFO_PT_DEF_ALARM_ST;
+				switch_check_id_sel[1] = JDSTREAM_VOLINFO_PT_STOP_ALARM;
+
+				$("#example_con_all").empty();
+
+				var str = "";
+				if(SwitchCheckNum_def < 2) {
+					str += "<div class=\"mui_switch_con\"></div>";
+				}
+				var i = 0;
+				for(i = 0; i < SwitchCheckNum_def; i++) {
+					var ids = "SwitchCheck_" + i;
+					str += "<div class=\"mui_switch_con\"><label><input onClick=\"SwitchCheck(" + i + ")\" id=\"" + ids + "\" class=\"mui_switch mui_switch_anim\" type=\"checkbox\" checked=\"\"></label><label id=\"switch_name_" + i + "\">---</label></div>";
+				}
+
+				$("#example_con_all").append(str);
+
+				for(i = 0; i < SwitchCheckNum_def; i++) {
+					var ids = "SwitchCheck_" + i;
+					switch_checkbox[i] = document.getElementById(ids);
+				}
+
+				SwitchCheckBrushEn = 1;
+				SwitchCheckBrush();
+			}
+			//------------------------------------
+
+			function StatusListBrush_info() {
+				if(StatusListBrushEn != 1) return;
+				for(i = 0; i < JDSTREAM_ID_NUM; i++) {
+					$("#mtext_t" + i).text(StreamIDLang_def[lang_sel][i]);
+				}
+
+			}
+
+			function StatusListBrush_st() {
+				if(StatusListBrushEn != 1) return;
+				for(i = 0; i < JDSTREAM_ID_NUM; i++) {
+					if(Stream_vol_type[i] == 1) {
+						var vol = parseInt(Stream_vol[i]);
+						var str = "0x" + vol.toString(16);
+						$("#mtext_v" + i).text(str);
+					} else {
+						$("#mtext_v" + i).text(Stream_vol[i]);
+					}
+				}
+
+			}
+
+			function StatusListBrush() {
+				StatusListBrush_info();
+				StatusListBrush_st();
+			}
+
+			function StatusListInit() {
+				$("#state_all").empty();
+
+				var str = "";
+				var i = 0;
+				for(i = 0; i < JDSTREAM_ID_NUM; i++) {
+					str += "<dl><dt id=\"mtext_t" + i + "\">aaa</dt><dd id=\"mtext_v" + i + "\">bbb</dd> </dl>";
+				}
+
+				$("#state_all").append(str);
+
+				StatusListBrushEn = 1;
+				StatusListBrush_info();
+				StatusListBrush_st();
+
+			}
+
+			$(window).keydown(function(e) {
+				key = e.keyCode ? e.keyCode : e.which;
+				$('.key.c' + key).addClass('keydown');
+				console.log(key);
+			});
+			$(window).keyup(function(e) {
+				key = e.keyCode ? e.keyCode : e.which;
+				$('.key.c' + key).removeClass('keydown');
+			});
+
+			function KeyBoard(sel) {
+				if(KeyBoardBrushEn != 1) return;
+
+				$("#debug_infos").text("KeyBoard " + sel);
+				if(sel == 1)
+					SyncDateTime();
+				else
+					KeyBoardSendCmd(sel, 1);
+
+			}
+
+			function KeyBoardSendCmd(sel, vol) {
+				ResetWaitStartTime();
+
+				vol = vol.toString();
+
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[KeyBoard_id_sel[sel]],
+						"current_value": vol
+					}]
+				}
+				controlDevice(command, false);
+			};
+
+			function KeyBoardBrush_info() {
+				if(KeyBoardBrushEn != 1) return;
+
+				for(i = 0; i < KeyBoardNum_def; i++) {
+					$("#KeyBoard_" + i).text(StreamIDLang_def[lang_sel][KeyBoard_id_sel[i]]);
+				}
+			}
+
+			function KeyBoardBrush() {
+				KeyBoardBrush_info();
+			}
+
+			function KeyBoardInit() {
+				KeyBoard_id_sel[0] = JDSTREAM_VOLINFO_PT_STOP_ALARM;
+				KeyBoard_id_sel[1] = JDSTREAM_VOLINFO_PT_DATE_TIME;
+
+				$("#key_alls").empty();
+
+				var str = "";
+				var i = 0;
+				for(i = 0; i < KeyBoardNum_def; i++) {
+					//		str+="<li><p onClick=\"KeyBoard("+i+")\" class=\"key c81\"><span id=\"KeyBoard_"+i+"\">xxx</span></p></li>";
+					str += "<li><p onmouseup=\"KeyBoard(" + i + ")\" class=\"key c81\"><span id=\"KeyBoard_" + i + "\">xxx</span></p></li>";
+				}
+
+				$("#key_alls").append(str);
+
+				KeyBoardBrushEn = 1;
+				KeyBoardBrush();
+			}
+			//------------------------------------
+			$(".btn").on("click", function(e) {
+				if($(this).attr("class").indexOf("on") >= 0) {
+					var command = {
+						"command": [{
+							"stream_id": "jan",
+							"current_value": "off"
+						}]
+					}
+					controlDevice(command, function(suc) {
+						$("#jan").attr("class", "btn off");
+					});
+				} else {
+					var command = {
+						"command": [{
+							"stream_id": "jan",
+							"current_value": "on"
+						}]
+					}
+					controlDevice(command, function(suc) {
+						$("#jan").attr("class", "btn on");
+					});
+				}
+			});
+
+			function showAlarmDialog() {
+				dialog_message = $("#dialog_message").dialog({
+					modal: true,
+					"buttons": {
+						"消警xxx": function() {
+							$(this).dialog("close");
+							closeHostAlarm("1");
+						}
+					}
+				});
+
+				DisplayAlarmDialogInfo();
+			}
+
+			function SetupLangSelPage() {
+
+				var width = document.documentElement.clientWidth;
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				//				var border_width  = width * 0.01;
+				//				border_width /= (LangSel_num *3);
+				var border_width = 1;
+				var total_border_width = (LangSel_num + 1) * 2 * border_width;
+				var li_width_pensent = (width - total_border_width) / 3.0;
+
+				var i = 0;
+				var str = "";
+				$("#page_lang_list").empty();
+				str += "<ul>";
+				for(i = 0; i < LangSel_num; i++) {
+					str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid\">";
+
+					str += "<input onClick=\"SetLang(" + i + ")\" id=\"radio_" + (i + 1) + "\" class=\"radio\" name=\"lang\" type=\"radio\" />";
+					str += "<label for=\"radio_" + (i + 1) + "\" class=\"trigger\">" + languageDef[i] + "</label>"
+
+					str += "</li>";
+				}
+
+				str += "<li style=\"width:" + li_width_pensent + "px;  border:#d4d9de " + border_width + "px solid; \">";
+				str += "<button id=\"dateTimeValidate\"; onClick =\"SyncDateTime()\"; >时区校正</button>";
+				str += "</li>";
+
+				str += "</ul>";
+
+				$("#page_lang_list").append(str);
+			}
+
+			function MsgLevelSel(arg) {
+				ResetWaitStartTime();
+				var mod;
+				switch(arg) {
+					case 0:
+						mod = '0';
+						break;
+					case 1:
+						mod = '1';
+						break;
+					case 2:
+						mod = '2';
+						break;
+					default:
+						mod = '0';
+						break;
+				}
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_MSG_LEVEL],
+						"current_value": mod
+					}]
+				}
+				controlDevice(command, false);
+			};
+           //初始化底部导航按钮界面函数，js添加html内容
+			function initDirectionBtnUI() {
+				var width = getClientWidth();
+				if(width > 640) {
+					width = 640;
+				}
+
+				if(width < 320) {
+					width = 320;
+				}
+
+				width += "px";
+				$("#btn_direction").css({
+					"height": "54px",
+					"width": width
+				});
+
+				var i = 0;
+				var str = "";
+				$("#btn_direction").empty();
+
+				str += "<ul>";
+				for(i = 0; i < 4; i++) {
+					str += "<li>";
+					str += "<input onClick=\"pageMode(" + i + ")\" id=\"pageMoshi_" + i + "\" class=\"radio\" name=\"pageMoshi\" type=\"radio\" />";
+					str += "<label for=\"pageMoshi_" + i + "\" class=\"trigger\"><em class=\"pageIco" + i + "\"></em><p id=\"pageSt_" + i + "\"></p></label>";
+					str += "</li>";
+				}
+				str += "</ul>";
+
+				$("#btn_direction").append(str);
+				$("#pageSt_0").text(btnBottomTxt[lang_sel][0]);
+				$("#pageSt_1").text(btnBottomTxt[lang_sel][1]);
+				$("#pageSt_2").text(btnBottomTxt[lang_sel][2]);
+				$("#pageSt_3").text(btnBottomTxt[lang_sel][3]);
+
+
+				showDivMyByIndex(curPage);
+			}
+
+			////////页面切换效果//////////////////////////////////////////////	
+
+			function setBtnBottomTxtByLanguage() {
+				$("#pageSt_0").text(btnBottomTxt[lang_sel][0]);
+				$("#pageSt_1").text(btnBottomTxt[lang_sel][1]);
+				$("#pageSt_2").text(btnBottomTxt[lang_sel][2]);
+				$("#pageSt_3").text(btnBottomTxt[lang_sel][3]);
+
+			}
+
+			function pageMode(selectPageIndex) {
+				showDivMyByIndex(selectPageIndex);
+			}
+
+			function hideDivs() {
+				$("section.my").eq(0).hide();
+				$("section.my").eq(1).hide();
+				$("section.my").eq(2).hide();
+				$("section.my").eq(3).hide();
+			}
+
+			function showDivMyByIndex(index) {
+				//				console.log("showDivMyByIndex");
+				var jumpValue = getLocalValueByKey("key_jump");
+
+				if(jumpValue != null && jumpValue != "" && jumpValue == "jump") {
+					index = 3;
+					setLocalValueWithKey("key_jump", "");
+					DisplayDebugInfo("showDivMyByIndex", 8);
+				}
+
+				//在这设置CSS
+
+				hideDivs();
+				if(index < 0) {
+					index = 0;
+				}
+				if(index > 3) {
+					index = 3;
+				}
+				curPage = index;
+				$("section.my").eq(index).show();
+				$("input:radio[name='pageMoshi']").eq(curPage).attr("checked", true);
+
+				setHostTitle(titleArr[lang_sel][curPage]);
+				window.scrollTo(0, 0);
+
+				if(curPage == 1) {
+					InitProgress();
+				}
+
+			}
+
+			//
+
+			function next(event) {
+				curPage += 1;
+
+				if(curPage > 3) {
+					curPage -= 1;
+					return;
+				}
+				if(curPage <= 0) {
+
+				}
+				event.preventDefault(); //阻止元素发生默认的行为（例如，当点击提交按钮时阻止对表单的提交）。
+				showDivMyByIndex(curPage);
+				//
+				enableBtn($("#next"));
+				enableBtn($("#previous"));
+				//
+				if(curPage == 3) {
+					disableBtn($("#next"));
+				}
+
+				setHostTitle(titleArr[lang_sel][curPage]);
+				window.scrollTo(0, 0);
+			}
+
+			function previous(event) {
+				curPage -= 1;
+
+				if(curPage < 0) {
+					curPage += 1;
+					return;
+				}
+
+				if(curPage >= 3) {
+
+				}
+
+				event.preventDefault();
+				showDivMyByIndex(curPage);
+
+				enableBtn($("#next"));
+				enableBtn($("#previous"));
+
+				if(curPage == 0) {
+					disableBtn($("#previous"));
+				}
+
+				setHostTitle(titleArr[lang_sel][curPage]);
+				window.scrollTo(0, 0);
+			}
+
+			function enableBtn(element) {
+
+				if(element.selector == "#next") {
+					element.css({
+						"background-image": "url(images/arrow_right_normal.png)",
+						"background-repeat": "no-repeat",
+						"background-size": "100% 100%"
+					});
+				}
+
+				if(element.selector == "#previous") {
+					element.css({
+						"background": "url(images/arrow_left_normal.png)",
+						"background-repeat": "no-repeat",
+						"background-size": "100% 100%"
+					});
+				}
+
+			}
+
+			function disableBtn(element) {
+
+				if(element.selector == "#next") {
+					element.css({
+						"background": "url(images/arrow_right_slector.png)",
+						"background-repeat": "no-repeat",
+						"background-size": "100% 100%"
+					});
+				}
+
+				if(element.selector == "#previous") {
+					element.css({
+						"background": "url(images/arrow_left_selector.png)",
+						"background-repeat": "no-repeat",
+						"background-size": "100% 100%"
+					});
+				}
+			}
+
+			$("section.my").on("click", function(event) {
+
+				var clickPageIndex = $("section.my").index(this);
+
+				if(clickPageIndex == curPage) {
+					return; //点击中间
+				}
+
+				if(clickPageIndex > curPage) {
+					next(event, clickPageIndex);
+				}
+				if(clickPageIndex < curPage) {
+					previous(event, clickPageIndex);
+				}
+			});
+
+			function setHostTitle(title) {
+				JDSMART.app.config({
+					titletext: title
+				});
+			}
+
+			////////页面切换效果//////////////////////////////////////////////
+
+			///////帮助页面/////////////////////////////////////////////////
+			function chinaTitleClk() {
+				if(isChinaTileShow) {
+					$("#ChinaContent").hide();
+					isChinaTileShow = false;
+					$("#ChinaTile #img").css({
+						"background-image": "url(images/arrow_normal.png)"
+					});
+				} else {
+					$("#ChinaContent").show();
+					isChinaTileShow = true;
+					$("#ChinaTile #img").css({
+						"background-image": "url(images/arrow_zhangkai.png)"
+					});
+				}
+			}
+
+			function englishTitleClk() {
+				if(isEnglishTitlShow) {
+					$("#EnglishContent").hide();
+					isEnglishTitlShow = false;
+					$("#EnglishTile #img").css({
+						"background-image": "url(images/arrow_normal.png)"
+					});
+				} else {
+					$("#EnglishContent").show();
+					isEnglishTitlShow = true;
+
+					$("#EnglishTile #img").css({
+						"background-image": "url(images/arrow_zhangkai.png)"
+					});
+				}
+			}
+
+			$("#ChinaTile #img").css({
+				"background-image": "url(images/arrow_zhangkai.png)"
+			});
+
+			$("#EnglishTile #img").css({
+				"background-image": "url(images/arrow_normal.png)"
+			});
+			///////帮助页面/////////////////////////////////////////////////
+
+			function event_info_caiSendCmd(str) {
+
+				var command = {
+					"command": [{
+						"stream_id": "event_info_cai",
+						"current_value": str
+					}]
+				}
+				controlDevice(command, false);
+			};
+
+			//临时触发的解析数据函数
+			function getAlarmRecord(strDataMore) {
+				var params = {};
+				if(strDataMore == "false") {
+					params = {
+						"feed_id": feedid,
+						"time_points": [dayIndex],
+						"streams": [Stream_def[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]],
+						"filter": {
+							"source": "report"
+						},
+						"order": "desc",
+						"count": "20"
+					};
+					lastMoreDayIndex = dayIndex;
+					dayIndex--;
+				} else {
+					var localDataIndex = dataIndex - 1;
+					var end_time = dateContainer[localDataIndex];
+					params = {
+						"feed_id": feedid,
+						"time_points": [lastMoreDayIndex],
+						"streams": [Stream_def[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]],
+						"filter": {
+							"source": "report"
+						},
+						"order": "desc",
+						"end_time": end_time,
+						"count": "20"
+					};
+				}
+
+				DisplayDebugInfo(JSON.stringify(params), 8);
+
+				JDSMART.io.getDeviceHistoryData(
+					params,
+					function(suc) {
+						//						reHistoryData(suc);
+						dealWithTheAlarmData1(suc);
+						DisplayDebugInfo(JSON.stringify(suc), 16);
+					},
+					function(error) {
+						DisplayDebugInfo(error.errorInfo, 16);
+					}
+				);
+
+			}
+
+			//下拉刷新报警记录
+			function RefreshAlarmRecord() {
+				var params = {
+					"feed_id": feedid,
+					"time_points": [0],
+					"streams": [Stream_def[JDSTREAM_VOLINFO_PT_DEF_EVENTINFO]],
+					"filter": {
+						"source": "report"
+					},
+					"order": "desc",
+					"count": "20"
+				};
+
+				DisplayDebugInfo(JSON.stringify(params), 8);
+
+				JDSMART.io.getDeviceHistoryData(
+					params,
+					function(suc) {
+						//						reHistoryData(suc);
+						dealWithTheRefreshAlarmData(suc);
+						DisplayDebugInfo(JSON.stringify(suc), 16);
+					},
+					function(error) {
+						DisplayDebugInfo(error.errorInfo, 16);
+					}
+				);
+			}
+
+			/**
+			 * 处理下拉刷新的记录
+			 * 根据时间点dataPoint.at 比对判断该记录是否已经加载过
+			 * @param {Object} suc
+			 */
+			function dealWithTheRefreshAlarmData(suc) {
+				var dt = eval(suc);
+
+				var tempDataContainerArr = new Array();
+				var tempDateContainerArr = new Array();
+				var tempSrcDataContainerArr = new Array();
+
+				var tempDataIndex = 0;
+
+				for(var j = 0; j < dt[0].datapoints.length; j++) {
+					var parseData = parseKplData(dt[0].datapoints[j].streams[0].value);
+					var parseDate = parseKplDate(dt[0].datapoints[j].at);
+
+					var parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					var allEq = false;
+					for(var k = 0; k < 20; k++) {
+						if(dateContainer[k] == dt[0].datapoints[j].at) {
+							allEq = true;
+							break;
+						}
+					}
+
+					if(allEq == false) {
+						//加入临时的缓存池;等全部遍历判断完后在一次性加入
+						//						tempDataContainerArr[tempDataIndex] = "N" + tempDataIndex + "  " + parseDate + "  " + parseDataArr[0] + "  " + parseDataArr[1];
+						//						tempDataContainerArr[tempDataIndex] = "N" + tempDataIndex + parseData + "@" + parseDate;
+						tempDataContainerArr[tempDataIndex] = " " + parseData + "@" + parseDate;
+						tempDateContainerArr[tempDataIndex] = dt[0].datapoints[j].at;
+						tempSrcDataContainerArr[tempDataIndex] = dt[0].datapoints[j].streams[0].value + "@" + parseDate;
+						tempDataIndex++;
+					}
+				}
+
+				for(var q = tempDataIndex - 1; q >= 0; q--) {
+					dataContainer.unshift(tempDataContainerArr[q]);
+					dateContainer.unshift(tempDateContainerArr[q]);
+					srcDataContainer.unshift(tempSrcDataContainerArr[q]);
+				}
+
+				if((dt[0].datapoints.length > 0) && (dataContainer.length > 0)) {
+					isNewHost = false;
+				}
+
+				dataIndex += tempDataIndex;
+				loadAlarmData4IS();
+			}
+
+			/**
+			 * 获取前两天的时间 
+			 */
+			function getTwoDaysAgoBeforeToday() {
+				var timestamp = (new Date().getTime() - (2 * 24 * 60 * 60 * 1000)); //两天前的时间戳	
+				timestamp = timestamp / 1000;
+				var formatDate1 = new Date();
+
+				formatDate1.setTime(timestamp * 1000);
+
+				var formatDate2 = formatDate1.toISOString();
+
+				var dateArr = formatDate2.split(".");
+
+				var dateAppStr = "";
+				dateAppStr += dateArr[0];
+				dateAppStr += "+0800";
+				console.log(dateAppStr);
+
+				return dateAppStr;
+			}
+
+			function dealWithTheAlarmData1(suc) {
+				if($.isEmptyObject(suc)) { //防止服务器传递[]
+					DisplayDebugInfo("return bec suc is []", 8);
+					return;
+				}
+
+				var dt = eval(suc);
+				var data_more = dt[0].more;
+				curentDataMore = dt[0].more;
+
+				for(var j = 0; j < dt[0].datapoints.length; j++) {
+					var parseData = parseKplData(dt[0].datapoints[j].streams[0].value);
+					var parseDate = parseKplDate(dt[0].datapoints[j].at);
+
+					var parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					dateContainer[dataIndex] = dt[0].datapoints[j].at;
+					//					dataContainer[dataIndex] = "" + dataIndex + "  " + parseDate + "  " + parseDataArr[0] + "  " + parseDataArr[1];
+					//					dataContainer[dataIndex] = " " + dataIndex + " " + parseData + "@" + parseDate;
+					dataContainer[dataIndex] = " " + parseData + "@" + parseDate;
+					srcDataContainer[dataIndex] = dt[0].datapoints[j].streams[0].value + "@" + parseDate;
+
+					dataIndex++;
+					everyAccumulate++;
+				}
+
+				if((dt[0].datapoints.length > 0) && (dataContainer.length > 0)) {
+					isAllDataLenZero = false;
+					isNewHost = false;
+				}
+
+				sendQueryRecordTime++;
+				if((sendQueryRecordTime > 6) && (isAllDataLenZero == true)) {
+					//7天内没记录 新买的机子
+
+					displayNoRecord();
+					DisplayDebugInfo("7天没有数据", 8);
+					sendQueryRecordTime = 0;
+					isAllDataLenZero = true;
+					isNewHost = true;
+					return;
+				}
+
+				if(everyAccumulate < 20) {
+					getAlarmRecord(data_more);
+				} else {
+					everyAccumulate = 0;
+				}
+			}
+
+			function dealWithTheAlarmData(suc) { //处理报警历史记录逻辑
+				var i = 0;
+				var j = 0;
+				var indexLastStr = bottomTipArr[lang_sel][0];
+				var indexLastStrFlag = "false";
+
+				var dateContainer;
+				var dataContainerSrc;
+				var dt = eval(suc);
+				var flag = 0; //1今 2昨 3更早
+				var index = 0;
+				for(i = 0; i < dt.length; i++) {
+
+					if(dt[i].time_point == 0) {
+						// 今天
+						flag = 1;
+						dateContainer = today;
+						dataContainerSrc = todaySrc;
+						if(dt[i].more) {
+							todayMore = dt[i].more;
+							if(todayMore == "true") {
+								indexLastStr = bottomTipArr[lang_sel][0];
+							} else {
+								indexLastStr = bottomTipArr[lang_sel][1];
+							}
+
+							indexLastStrFlag = dt[i].more;
+						}
+					}
+					if(dt[i].time_point == -1) {
+						// 昨天
+						flag = 2;
+						dateContainer = yestoday;
+						dataContainerSrc = yestodaySrc;
+						if(dt[i].more) {
+							yestodayMore = dt[i].more;
+
+							if(yestodayMore == "true") {
+								indexLastStr = bottomTipArr[lang_sel][0];
+							} else {
+								indexLastStr = bottomTipArr[lang_sel][1];
+							}
+
+							indexLastStrFlag = dt[i].more;
+						}
+					}
+					if(dt[i].time_point == 65535) {
+						// 更早前
+						flag = 3;
+						dateContainer = lastDay;
+						dataContainerSrc = lastDaySrc;
+						indexLastStrFlag = "true";
+					}
+
+					for(j = 0; j < dt[i].datapoints.length; j++) {
+						//						console.log(dt[i].datapoints[j].at); //日期时间
+						//						console.log(dt[i].datapoints[j].streams[0].value); //报警事件
+						var parseData = parseKplData(dt[i].datapoints[j].streams[0].value);
+						var parseDate = parseKplDate(dt[i].datapoints[j].at);
+
+						var parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+						if(parseDataArr[2] == "1") { //旧信息 已上报过
+							continue;
+						}
+
+						if(flag == 1) {
+							todayIndex++;
+							index = todayIndex;
+							if(j == (dt[i].datapoints.length - 1)) {
+								today_endtime = dt[i].datapoints[j].at;
+							}
+
+							dataContainerSrc[j] = dt[i].datapoints[j].at + "@" + dt[i].datapoints[j].streams[0].value;
+						}
+						if(flag == 2) {
+							yestodayIndex++;
+							index = yestodayIndex;
+							if(j == (dt[i].datapoints.length - 1)) {
+								yestoday_endtime = dt[i].datapoints[j].at;
+							}
+
+							dataContainerSrc[j] = dt[i].datapoints[j].at + "@" + dt[i].datapoints[j].streams[0].value;
+						}
+						if(flag == 3) {
+							lastDayIndex++;
+							index = lastDayIndex;
+							if(j == (dt[i].datapoints.length - 1)) {
+								twoDayAgo_65535_endtime = dt[i].datapoints[j].at;
+							}
+
+							dataContainerSrc[j] = dt[i].datapoints[j].at + "@" + dt[i].datapoints[j].streams[0].value;
+						}
+
+						//						dateContainer[index] = "" + parseDate + "#" + parseDataArr[0] + "#" + parseDataArr[1] + "#" + index;
+						dateContainer[index] = "" + parseDate + "  " + parseDataArr[0];
+						//						dateContainer[j] = "" + parseDate + "#" +parseData;
+						dateContainer[++index] = indexLastStr;
+						//index上面已经自增  不用++
+						dataContainerSrc[index] = indexLastStrFlag;
+					}
+				}
+			}
+
+			/**
+			 * 报警记录语言转换
+			 * @param {Object} language
+			 */
+			function formatRecordLanguage(language) {
+				var parseData = "";
+				var parseDate = "";
+				var todaySplArr = new Array();
+				var parseDataArr = new Array();
+				var i = 0;
+				var loadMore = "";
+
+				for(i = 0; i < todaySrc.length; i++) {
+
+					if(todaySrc[i] == "true") { //加载更多
+						loadMore = bottomTipArr[lang_sel][0];
+						today[i] = loadMore;
+						continue;
+					} else if(todaySrc[i] == "false") { //已无数据
+						loadMore = bottomTipArr[lang_sel][1];
+						today[i] = loadMore;
+						continue;
+					}
+
+					todaySplArr = todaySrc[i].split("@");
+					parseData = parseKplData(todaySplArr[1]);
+					parseDate = parseKplDate(todaySplArr[0]);
+
+					parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+					today[i] = "" + parseDate + "  " + parseDataArr[0];
+				}
+
+				for(i = 0; i < yestodaySrc.length; i++) {
+					if(yestodaySrc[i] == "true") { //加载更多
+						loadMore = bottomTipArr[lang_sel][0];
+						yestoday[i] = loadMore;
+						continue;
+					} else if(yestodaySrc[i] == "false") { //已无数据
+						loadMore = bottomTipArr[lang_sel][1];
+						yestoday[i] = loadMore;
+						continue;
+					}
+
+					todaySplArr = yestodaySrc[i].split("@");
+					parseData = parseKplData(todaySplArr[1]);
+					parseDate = parseKplDate(todaySplArr[0]);
+
+					parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					yestoday[i] = "" + parseDate + "  " + parseDataArr[0];
+				}
+
+				for(i = 0; i < lastDaySrc.length; i++) {
+					if(lastDaySrc[i] == "true") { //加载更多
+						loadMore = bottomTipArr[lang_sel][0];
+						lastDay[i] = loadMore;
+						continue;
+					} else if(lastDaySrc[i] == "false") { //已无数据
+						loadMore = bottomTipArr[lang_sel][1];
+						lastDay[i] = loadMore;
+						continue;
+					}
+
+					todaySplArr = lastDaySrc[i].split("@");
+					parseData = parseKplData(todaySplArr[1]);
+					parseDate = parseKplDate(todaySplArr[0]);
+
+					parseDataArr = parseData.split("@"); //留着做扩展  后期如果不需要时间来源可以去掉	
+					if(parseDataArr[2] == "1") { //旧信息 已上报过
+						continue;
+					}
+
+					lastDay[i] = "" + parseDate + "  " + parseDataArr[0];
+				}
+
+				var dateArrCn = new Array(
+					"更早前",
+					"昨天",
+					"今天",
+					"确认",
+					"查看更多"
+				);
+
+				var dateArrEn = new Array(
+					"earlier",
+					"yesterday",
+					"today",
+					"Confirm",
+					"Load more"
+				);
+
+				var dateArr = new Array(
+					dateArrCn,
+					dateArrEn
+				);
+
+				var dateSt_1 = $("#dateSt_1");
+				if(dateSt_1) {
+					dateSt_1.text(dateArr[lang_sel][0]);
+				}
+
+				var dateSt_2 = $("#dateSt_2");
+				if(dateSt_2) {
+					dateSt_2.text(dateArr[lang_sel][1]);
+				}
+
+				var dateSt_3 = $("#dateSt_3");
+				if(dateSt_3) {
+					dateSt_3.text(dateArr[lang_sel][2]);
+				}
+
+				var dateconfirm1 = $("#dateconfirm1");
+				if(dateconfirm1) {
+					dateconfirm1.text(dateArr[lang_sel][3]);
+				}
+
+				var datecancle1 = $("#datecancle1");
+				if(datecancle1) {
+					datecancle1.text(dateArr[lang_sel][4]);
+				}
+			}
+
+			//			2016-11-27T21:37:43+0800
+			function parseKplDate(parseDate) {
+				var arr1 = parseDate.split("T");
+				var arr2 = arr1[1].split("+");
+
+				return arr1[0] + " " + arr2[0];
+			}
+
+			/**
+			 * 获取事件识别码的下标索引 
+			 * @param {Object} parseingData
+			 */
+			function getIndexByparseKplData(parseingData) {
+				var parseingDataInt = parseInt(parseingData);
+
+				////	事件识别码	解析
+				var parseingDataIntBit = parseingDataInt & 0xFF;
+
+				var i = 0;
+				for(i = 0; i < event_identify_num_arr.length; i++) {
+					if(parseingDataIntBit == event_identify_num_arr[i]) { //i是下标索引
+						return i;
+					}
+				}
+				return i;
+			}
+
+			function parseKplData4Recent(parseingData) {
+
+				var parseingDataInt = parseInt(parseingData);
+				var eventData = "";
+
+				////	事件识别码	解析
+				var parseingDataIntBit = parseingDataInt & 0xFF;
+				var i = 0;
+				for(i = 0; i < event_identify_num_arr.length; i++) {
+					if(parseingDataIntBit == event_identify_num_arr[i]) { //i是下标索引
+
+						if(lang_sel == 0) {
+							eventData = event_identify_num_def_arr[0][i];
+						} else {
+							eventData = event_identify_num_def_arr[2][i];
+						}
+					}
+				}
+
+				////	事件来源	解析
+				parseingDataIntBit = parseingDataInt & 0xFF00;
+				parseingDataIntBit = parseingDataIntBit >> 8;
+
+				for(i = 0; i < event_src_arr.length; i++) {
+					if(parseingDataIntBit == event_src_arr[i]) {
+						eventData = eventData + "@" + event_src_def_arr[lang_sel][i];
+					}
+				}
+
+				//是否是旧信息
+				if(parseingDataInt == 0) {
+					eventData = eventData + "@" + "1";
+				} else {
+					parseingDataIntBit = parseingDataInt & 0x1000000;
+					parseingDataIntBit = parseingDataIntBit >> 24;
+
+					if(parseingDataIntBit == 1) {
+						eventData = eventData + "@" + "1";
+					} else {
+						eventData = eventData + "@" + "0";
+					}
+				}
+
+				//				console.log(eventData);
+				return eventData;
+			}
+
+			function parseKplData(parseingData) {
+
+				var parseingDataInt = parseInt(parseingData);
+				var eventData = "";
+
+				////	事件识别码	解析
+				var parseingDataIntBit = parseingDataInt & 0xFF;
+				var i = 0;
+				for(i = 0; i < event_identify_num_arr.length; i++) {
+					if(parseingDataIntBit == event_identify_num_arr[i]) { //i是下标索引
+						eventData = event_identify_num_def_arr[lang_sel][i];
+					}
+				}
+
+				////	事件来源	解析
+				parseingDataIntBit = parseingDataInt & 0xFF00;
+				parseingDataIntBit = parseingDataIntBit >> 8;
+
+				for(i = 0; i < event_src_arr.length; i++) {
+					if(parseingDataIntBit == event_src_arr[i]) {
+						//						eventData = eventData + "@" + event_src_def_arr[lang_sel][i];
+						eventData = eventData + "@" + devSrcImgUrl[i];
+					}
+				}
+
+				//是否是旧信息
+				if(parseingDataInt == 0) {
+					eventData = eventData + "@" + "1";
+				} else {
+					parseingDataIntBit = parseingDataInt & 0x1000000;
+					parseingDataIntBit = parseingDataIntBit >> 24;
+
+					if(parseingDataIntBit == 1) {
+						eventData = eventData + "@" + "1";
+					} else {
+						eventData = eventData + "@" + "0";
+					}
+				}
+
+				//				console.log(eventData);
+				return eventData;
+			}
+
+			function sendLogToServr(str_log) {
+
+				var command = {
+					"command": [{
+						"stream_id": "event_info_cai",
+						"current_value": str_log
+					}]
+				}
+				controlDevice(command, function(suc) {
+
+				});
+			};
+
+			function event_record_click() {
+				$("#hostEvent_Bar #btn_event_record").date({
+					type: "event_record" //language  timezone
+				});
+			}
+			//////获取报警记录//////////////////////////////////////////////////
+
+			///////html5本地保存//////////////////////////////////////////////////////
+			function getLocalValueByKey(key) {
+				var value = localStorage.getItem(key);
+				return value;
+			}
+
+			function setLocalValueWithKey(key, value) {
+				localStorage.setItem(key, value);
+			}
+
+			///////html5本地保存//////////////////////////////////////////////////////
+
+			//////////报警对话框////////////////////////////////////////////////////////
+			//展示没有报警记录的界面
+
+			function displayNoRecord() {
+				//				toast(toastTipArr[lang_sel][0]);
+			}
+
+			//用于语言版本更换处理
+			function RefreshEventRecordLoaded() {
+
+				$("div#alarmRecordDlg div#alarmheader span").text(btnTextArray[lang_sel][1]);
+
+				//对数据容器做一些数据的处理  
+				//对dataContainer重新赋值
+				dataContainer.splice(0, dataContainer.length);
+
+				for(var i = 0; i < srcDataContainer.length; i++) {
+
+					var splitData = srcDataContainer[i].split("@");
+					var parseData = parseKplData(splitData[0]);
+					var parseDate = splitData[1];
+
+					dataContainer[i] = parseData + "@" + parseDate;
+				}
+
+				if(alarmScroll != null) {
+					loadAlarmData4IS();
+					alarmScroll.refresh();
+				}
+			}
+
+			function loadRecordUIFramework() {
+				var height = getClientHeigth();
+				var width = getClientWidth(); //计算高度和距离顶部的大小
+				var topValL = height * 0.1;
+				height = height * 0.8;
+				var helpBtn_Bar_height = $(".my").eq(2).css("height");
+				var topVal = 0 - parseInt(helpBtn_Bar_height);
+				topVal += topValL;
+
+				//高度做一个判断  如果
+
+				//计算宽度和左右的边距
+				width = width * 0.9;
+
+				width += "px";
+				height += "px";
+				topVal += "px";
+
+				$("#alarmRecordDlg").css({
+					"width": width,
+					"height": height,
+					"top": topVal
+						//,"position": "absolute"
+						//,"top": "10%"
+						//,"left": "5%"
+						,
+					"z-index": "10000"
+				});
+
+				$("div#alarmRecordDlg div#alarmheader span").text(btnTextArray[lang_sel][1]);
+			}
+
+			function eventRecordLoaded() {
+
+				loadRecordUIFramework();
+				var triggleActionCn = new Array(
+					"下拉刷新",
+					"松手开始刷新",
+					"正在刷新...",
+					"刷新完成",
+					"上拉加载更多",
+					"松手开始加载",
+					"正在加载...",
+					"加载完成"
+				);
+
+				var triggleActionEn = new Array(
+					"Pull down to refresh",
+					"Release to start refresh",
+					"Refreshing...",
+					"Refresh completed",
+					"Pull up to load more",
+					"release to start loading",
+					"Loading...",
+					"Loading completed"
+				);
+
+				var triggleAction = new Array(
+					triggleActionCn, triggleActionEn
+				);
+
+				var option = {
+					pull_up: true, //是否显示上拉    
+					pull_down: true, //是否显示下拉    
+					is_loading: false, //是否正在加载 即上拉后正在加载        
+					is_refresh: false, //是否正在下拉刷新      
+					pull_distance: 50, //拉动距离 即达到出发加载或刷新的临界值     
+					pull_element_height: 50, //上拉 下拉显示标签的高度  也是iscroll回弹后定位的高度        
+					pull_up_element: document.querySelector('#upTag'), //上拉标签       
+					pull_down_element: document.querySelector('#downTag') //下拉标签 
+				};
+
+				//上拉下拉几个临界点的显示效果    
+				var loading_style = { // 变化的文字或者效果       
+					refresh_before: function() { //没有刷新没有加载情况下才变化    
+						if(!option.is_loading && !option.is_refresh) option.pull_down_element.innerText = triggleAction[lang_sel][0];
+					},
+					refresh_able: function() { //没有刷新没有加载情况下才变化            
+						if(!option.is_loading && !option.is_refresh) option.pull_down_element.innerText = triggleAction[lang_sel][1];
+					},
+					refresh_start: function() {
+						document.getElementById('downTag').innerText = triggleAction[lang_sel][2]; //正在刷新的时候隐藏上拉加载           
+						if(option.pull_up) option.pull_up_element.style.display = 'none';
+					},
+					refresh_end: function() {
+						document.getElementById('downTag').innerText = triggleAction[lang_sel][3]; //刷新完成 显示上拉加载      
+						if(option.pull_up) option.pull_up_element.style.display = '';
+						loadAlarmData4IS();
+					},
+					load_before: function() { //没有刷新没有加载情况下 才变化      
+						if(!option.is_loading && !option.is_refresh) option.pull_up_element.innerText = triggleAction[lang_sel][4];
+					},
+					load_able: function() { //没有刷新没有加载情况下 才变化          
+						if(!option.is_loading && !option.is_refresh) option.pull_up_element.innerText = triggleAction[lang_sel][5];
+					},
+					load_start: function() {
+						document.getElementById('upTag').innerText = triggleAction[lang_sel][6]; //正在加载的时候 隐藏下拉刷新       
+						if(option.pull_down) option.pull_down_element.style.display = 'none';
+
+						///正在加载
+					},
+					load_end: function() {
+						option.pull_up_element.innerText = triggleAction[lang_sel][7]; //加载完成了 显示下拉刷新          
+						if(option.pull_down) option.pull_down_element.style.display = '';
+						loadAlarmData4IS();
+					}
+
+				}; //根据设置 隐藏上拉下拉标签 
+				if(!option.pull_up) option.pull_up_element.style.display = 'none';
+				if(!option.pull_up) option.pull_up_element.style.display = 'none';
+				if(!option.pull_down) option.pull_down_element.style.display = 'none';
+				//实例化iscroll 
+				alarmScroll = new IScroll_probe('.alarmDlg_wrapper', {
+					probeType: 2
+				});
+				//滑动事件处理  
+				alarmScroll.on('scroll', function() {
+					//计算拉动的距离 处理为正数是下拉 负数是上拉    
+					var absY = this.maxScrollY - this.y;
+					this.moved_distance = this.y > 0 ? this.y : (absY > 0 ? -absY : 0); //回弹距离0 默认是到初始位置   
+					this.minScrollY = 0;
+					switch(true) { //大于0 为下拉刷新 :0 - 刷新的临界值      
+						case this.moved_distance > 0 && this.moved_distance < option.pull_distance:
+							loading_style.refresh_before();
+							break; //大于0 为下拉刷新 :刷新的临界值以上 出发刷新           
+						case this.moved_distance > option.pull_distance:
+							loading_style.refresh_able(); //启用下拉刷新 并且不是上拉加载正在加载的情况下才控制回弹高度         
+							if(option.pull_down && !option.is_loading) this.minScrollY = option.pull_element_height;
+							break; //小于0 上拉加载: 0 - 负数 的刷新临界值       
+						case this.moved_distance < 0 && this.moved_distance > -option.pull_distance:
+							loading_style.load_before();
+							break; //小于0 上拉加载: 负数 的刷新临界值以下 触发加载            case :
+						case this.moved_distance < -option.pull_distance:
+							loading_style.load_able(); //启用的上拉加载 并且不是正在刷新 才控制回弹高度             
+							if(option.pull_up && !option.is_refresh) this.minScrollY = option.pull_element_height;
+							break;
+					}
+				});
+				//滑动结束的处理  
+				alarmScroll.on('scrollEnd', function(e) { //没有正则刷新且没有正在加载 才触发 刷新和加载的处理   
+					if(!option.is_loading && !option.is_refresh) { //判断临界值     
+						if(this.moved_distance > option.pull_distance) { //刷新
+							loading_style.refresh_start();
+							option.is_refresh = true; //用一个计时器模拟了加载数据时间          
+							var t1 = setTimeout(function() {
+								clearTimeout(t1);
+								loading_style.refresh_end();
+								t1 = setTimeout(function() {
+									clearTimeout(t1);
+									alarmScroll.refresh();
+									option.is_refresh = false;
+								}, 500);
+
+								console.log("t1"); //刷新完成
+
+							}, 3000);
+							RefreshAlarmRecord();
+						}
+
+						if(this.moved_distance < -option.pull_distance) { //加载
+							loading_style.load_start();
+							option.is_loading = true; //用一个计时器模拟了加载数据时间            
+							var t2 = setTimeout(function() {
+								clearTimeout(t2);
+								loading_style.load_end();
+								t2 = setTimeout(function() {
+									clearTimeout(t2);
+									option.is_loading = false;
+									alarmScroll.refresh();
+								}, 500);
+
+								console.log("t2"); //加载完成
+
+							}, 3000);
+
+							getAlarmRecord(curentDataMore);
+						}
+					}
+				});
+
+				$(".mengbanDlg").show();
+				$(".mengbanDlg").click(function() {
+					clsAlaRecdDlg();
+				});
+
+				loadAlarmData4IS();
+				//打开记录框加载
+				RefreshAlarmRecord();
+			}
+
+			function loadAlarmData4IS() {
+
+				if(isNewHost == true) {
+					$("#ul_contend").empty();
+
+					var label = "";
+
+					label += "<li>";
+					label += toastTipArr[lang_sel][0];
+					label += "</li>";
+
+					$("#ul_contend").append(label);
+					label = "";
+
+					$("#ul_contend").css({
+						"position": "absolute",
+						"top": "45%"
+					});
+					$("#ul_contend li").css({
+						"border-bottom": "0px solid gainsboro",
+						"text-align": "center"
+					});
+
+				} else {
+					$("#ul_contend").empty();
+
+					var label = "";
+					var parseDataArr = "";
+					for(var i = 0; i < dataContainer.length; i++) {
+
+						parseDataArr = dataContainer[i].split("@");
+
+						label += "<li>";
+						label += "<em class=\"dataRecordDevImg\" style=\"background-image: url(" + parseDataArr[1] + ");\"></em>";
+						label += "<span class =\"dataRecordDevSpan\">" + parseDataArr[3] + " " + parseDataArr[0] + "</span>"
+						label += "</li>";
+
+						$("#ul_contend").append(label);
+						label = "";
+					}
+
+					$("#ul_contend").css({
+						"position": "static",
+					});
+					$("#ul_contend li").css({
+						"border-bottom": "1px solid gainsboro",
+						"text-align": "left"
+					});
+				}
+			}
+            //
+			function clsZoneLangDlg() {
+				$("#zoneLangDlg").hide();
+				if(zoneLangScroll != null) {
+					zoneLangScroll.destroy();
+					zoneLangScroll = null;
+					$(".mengbanDlg").hide();
+				}
+			}
+
+			function clsAlaRecdDlg() {
+				$("#alarmRecordDlg").hide();
+				if(alarmScroll != null) {
+					alarmScroll.destroy();
+					alarmScroll = null;
+					$(".mengbanDlg").hide();
+				}
+			}
+
+			//获取一周前的时间    时间函数    有待研究
+			function GetBeforeTime(t) {
+				var timestamp = (new Date().getTime() - t); //前推的时间戳	
+				timestamp = timestamp / 1000;
+
+				timestamp += 8 * 3600; ///////////////////////////////
+
+				var formatDate1 = new Date();
+
+				formatDate1.setTime(timestamp * 1000);
+
+				var formatDate2 = formatDate1.toISOString();
+
+				var dateArr = formatDate2.split(".");
+
+				var dateAppStr = "";
+				dateAppStr += dateArr[0];
+				dateAppStr += "+0800";
+				//console.log(dateAppStr);
+
+				return dateAppStr;
+			}
+			//////////报警对话框////////////////////////////////////////////////////////
+			//////////时区    中英文     操作说明书////////////////////////////////////////////////////////
+
+			/**
+			 *	1:第一步 +<b> 
+			 *  2：段落 左边空两个字符
+			 *  3:图片 
+			 */
+
+			/**
+			 * @author Cai
+			 * @param {Object} zoneLangFlag =====value:["language","tiemZone","opeDesBook"]
+			 */
+				//加载弹出框
+			function loadDlgs(zoneLangFlag) {
+                 //加载页面框架
+				loadUIFramework(zoneLangFlag);
+				//填充页面内容
+				fillUIFramework(zoneLangFlag);
+                //语言版本  iscroll框架初始化
+				zoneLangDlgloaded(zoneLangFlag);
+			}
+           //加载页面框架
+			function loadUIFramework(zoneLangFlag) {
+
+				var height_client = getClientHeigth();
+				var width_client = getClientWidth();
+
+				//计算高度和距离顶部的大小
+				//var topValL = height_client * 0.1;
+				var height = height_client * 0.8;
+
+				//计算宽度和左右的边距
+				var width = width_client * 0.9;
+
+				height += "px";
+				width += "px";
+				//topVal += "px";
+
+				$("#zoneLangDlg").css({
+					"width": width,
+					"height": height
+						//"top": topVal
+						,
+					"position": "absolute",
+					"top": "10%",
+					"left": "5%",
+					"z-index": "10000"
+				});
+
+				var eleLength = 0;
+				var str = "";
+				$("#zoneLangDlg_scroller").empty();
+
+				if(zoneLangFlag === "tiemZone") {
+					eleLength = timeZoneCn.length;
+				}
+				if(zoneLangFlag === "language") {
+					eleLength = 2;
+
+					$("#footer").css({
+						"bottom": "40px"
+					});
+					$("#zoneLangDlg_wrapper").css({
+						"bottom": "48px"
+					});
+				}
+
+				if(zoneLangFlag === "opeDesBook") {
+					eleLength = opeDesBookCn.length;
+					for(var i = 0; i < eleLength; i++) {
+
+						if(opeDesBook[lang_sel][i].indexOf("images") == 0) { //图片
+							str += "<div id=\"id_scroll_li" + i + "\" class=\"cls_scroll_li_img\"></div>";
+						} else { //文本
+							str += "<p id=\"id_scroll_li" + i + "\" class=\"cls_scroll_txt\"></p>";
+						}
+					}
+					//					str += "</ul>";
+
+					$("#zoneLangDlg_scroller").append(str);
+					return;
+				}
+
+				str += "<ul>";
+				for(var i = 0; i < eleLength; i++) {
+					str += "<li id=\"id_scroll_li" + i + "\" class=\"cls_scroll_li\"></li>";
+				}
+				str += "</ul>";
+
+				$("#zoneLangDlg_scroller").append(str);
+
+			}
+
+			var curZoneLangFlag = "";
+
+			function fillUIFramework(zoneLangFlag) {
+
+				curZoneLangFlag = zoneLangFlag;
+				if(zoneLangFlag === "tiemZone") {
+					for(var i = 0; i < timeZoneCn.length; i++) {
+						$("#id_scroll_li" + i).text(timeZone[lang_sel][i]);
+						$("#id_scroll_li" + i).css({
+							"text-align": "left"
+						});
+					}
+
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][2]);
+				}
+
+				if(zoneLangFlag === "language") {
+					var idealHeight = 45 + 48;
+
+					for(var i = 0; i < languageDef.length; i++) {
+						$("#id_scroll_li" + i).text(languageDef[i]);
+						idealHeight += 40;
+					}
+
+					//					ul_height += "px";
+					idealHeight += "px";
+
+					$("#zoneLangDlg").css({
+						"height": idealHeight
+					});
+
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][0]);
+				}
+
+				if(zoneLangFlag === "opeDesBook") {
+					for(var i = 0; i < opeDesBookCn.length; i++) {
+						if(opeDesBook[lang_sel][i].indexOf("images") == 0) {
+							var imgUrl = "<img class = \"opeDesBookImg\" src =\"" + opeDesBook[lang_sel][i] + "\">";
+							$("#id_scroll_li" + i).html(imgUrl);
+						} else {
+							if(opeDesBookTag[i] == "1") {
+								$("#id_scroll_li" + i).html("<b></b>");
+								$("#id_scroll_li" + i + " b").text(opeDesBook[lang_sel][i]);
+							} else {
+								$("#id_scroll_li" + i).text(opeDesBook[lang_sel][i]);
+								$("#id_scroll_li" + i).css({
+									"text-indent": "2em"
+								});
+							}
+						}
+					}
+					// set title
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][1]);
+				}
+			}
+
+			/**
+			 * 解决怎么动态加载插入滚动异常 
+			 */
+			function RefreshIscroll() {
+				if(zoneLangScroll != null) {
+					zoneLangScroll.refresh();
+				}
+			}
+
+			/**
+			 * 用于语言版本更新 
+			 */
+			function RefreshZoneLangDlgloaded() {
+
+				if(curZoneLangFlag === "tiemZone") {
+					for(var i = 0; i < timeZoneCn.length; i++) {
+						$("#id_scroll_li" + i).text(timeZone[lang_sel][i]);
+					}
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][2]);
+				}
+				if(curZoneLangFlag === "opeDesBook") {
+					for(var i = 0; i < opeDesBookCn.length; i++) {
+						if(opeDesBook[lang_sel][i].indexOf("images") == 0) {
+							var imgUrl = "<img class = \"opeDesBookImg\" src =\"" + opeDesBook[lang_sel][i] + "\">";
+							$("#id_scroll_li" + i).html(imgUrl);
+						} else {
+							$("#id_scroll_li" + i).text(opeDesBook[lang_sel][i]);
+						}
+					}
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][1]);
+				}
+
+				if(curZoneLangFlag === "language") {
+					$("#zoneLangDlg div#header span").text(textArray[lang_sel][0]);
+
+					var langIndex = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL]);
+					scrollToEle(langIndex);
+				}
+
+				if(zoneLangScroll != null) {
+					zoneLangScroll.refresh();
+				}
+			}
+         //语言版本  iscroll框架初始化
+			function zoneLangDlgloaded(zoneLangFlag) {
+				zoneLangScroll = new IScroll('#zoneLangDlg_wrapper', {
+					mouseWheel: true,
+					tap: true,
+					click: true
+				});
+				//居中跳转  debug注释
+				//				
+				//元素的点击事件
+				for(var i = 0; i < timeZoneCn.length; i++) {
+					//					$("#zoneLangDlg_scroller ul li#id_scroll_li" + i).off("click");
+					$("#zoneLangDlg_scroller ul li#id_scroll_li" + i).one("click", {
+							parm_i: i,
+							parm_zoneLangFlag: zoneLangFlag
+						},
+						function(event) {
+							scrollEleClickCallback(event.data.parm_i, event.data.parm_zoneLangFlag);
+						});
+				}
+
+				$("#zoneLangDlg").show();
+				zoneLangScroll.refresh();
+
+				if(zoneLangFlag === "tiemZone") {
+					var zoneValue = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_DATE_TIME]) - 1440;
+					var zoneValueIndex = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL]);
+
+					var currentZoneIndex = 0;
+					var i = 0;
+					for(i = 0; i < timeZoneIndexValue.length; i++) {
+						if(zoneValue == timeZoneIndexValue[i]) {
+							currentZoneIndex = i;
+							break;
+						}
+					}
+					//					scrollToEle(currentZoneIndex);
+
+					if(zoneValueIndex < 0) {
+						zoneValueIndex = 0;
+					}
+
+					if(zoneValueIndex >= timeZoneCn.length) {
+						zoneValueIndex = 0;
+					}
+
+					scrollToEle(zoneValueIndex);
+				}
+
+				if(zoneLangFlag === "language") {
+					var langIndex = parseInt(Stream_vol[JDSTREAM_VOLINFO_PT_LANG_SEL]);
+					scrollToEle(langIndex);
+				}
+
+				$(".mengbanDlg").show();
+				$(".mengbanDlg").click(function() {
+					clsZoneLangDlg();
+				});
+			}
+
+			/**
+			 * 元素被点击的回调事件 
+			 * 根据索引判断是哪个元素的回调 
+			 * @param {Object} elementInedex
+			 */
+			function scrollEleClickCallback(elementInedex, parm_zoneLangFlag) {
+				//为了扩展 必须动态获取li的个数
+				if(parm_zoneLangFlag === "opeDesBook") {
+					return;
+				}
+
+				var li_num = $("#zoneLangDlg_scroller ul li").length;
+
+				for(var i = 0; i < li_num; i++) {
+					$("#zoneLangDlg_scroller ul li").eq(i).css({
+						"background": "#FFF",
+						"color": "#1E1E1E"
+					});
+				}
+
+				if(curZoneLangFlag == "language") {
+					$("#zoneLangDlg_scroller ul li").eq(elementInedex).css({
+						"color": "#0096D5"
+					});
+				} else {
+					$("#zoneLangDlg_scroller ul li").eq(elementInedex).css({
+						"background": "#ccc"
+					});
+				}
+
+				if(parm_zoneLangFlag === "tiemZone") {
+					SyncDateTime(timeZoneIndexValue[elementInedex]);
+					var splitArr = timeZoneCn[elementInedex].split(" ");
+					//					$("#helpBtn_Bar li #span_txt_content").eq(2).text(splitArr[0]);
+					$("#helpBtn_Bar li #span_txt_content").eq(2).text(timeZone[lang_sel][elementInedex]);
+					SetTimeZoneIndex(elementInedex);
+				}
+				if(parm_zoneLangFlag === "language") {
+					SetLang(elementInedex);
+				}
+
+				clsZoneLangDlg();
+			}
+
+			/**
+			 * 滚动到某个元素 并且居中
+			 * @param elememtIndex 要居中的元素的索引
+			 */
+			function scrollToEle(elememtIndex) {
+
+				if(elememtIndex != 0) {
+					zoneLangScroll.scrollToElement(document.querySelector('#zoneLangDlg_scroller li:nth-child(' + elememtIndex + ')'), 1, null, true);
+				}
+
+				if(curZoneLangFlag == "language") {
+					for(var i = 0; i < languageDef.length; i++) {
+						$("#zoneLangDlg_scroller ul li").eq(i).css({
+							"color": "#1E1E1E"
+						});
+					}
+
+					$("#zoneLangDlg_scroller ul li").eq(elememtIndex).css({
+						"color": "#0096D5"
+					});
+				} else {
+					$("#zoneLangDlg_scroller ul li").eq(elememtIndex).css({
+						"background": "#ccc"
+					});
+				}
+			}
+
+			//////////时区    中英文     操作说明书////////////////////////////////////////////////////////
+
+			//时区索引指令
+			function SetTimeZoneIndex(index) {
+				Stream_vol_flag[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL] = 1;
+				Stream_vol[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL] = index.toString();
+
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL],
+						"current_value": Stream_vol[JDSTREAM_VOLINFO_PT_TIMEZONEINDEX_VOL]
+					}]
+				}
+				controlDevice(command, function(suc) {});
+			};
+
+            //预约布撤防更新
+			function ReserveUpdate() {
+				// 0                     10
+				ClockReserveActive = ClockReserveSendCmdVol_Def;
+				ReserveStr = "";
+				 //启用按钮
+				var boxes_en = document.getElementsByName("reserve_en");
+				 //遍历8个预约不撤防
+				for(i = 0; i < ReserveVolGroupNum_Def; i++) {
+					if(boxes_en[i].checked == true) ReserveVolNow[i] = 0x1000000;
+					else ReserveVolNow[i] = 0; //1个数组，8个为0数 用来表示当前的启用按钮状态
+                   //详情按钮下的 （外出布防，在家布防，撤防）
+					var boxes = document.getElementsByName("reserve_mod_" + i);
+					k = 0;
+					//下面的关于16进制的转换传值有点点蒙
+					for(j = 0; j < 3; j++) {
+						if(boxes[j].checked == true) {
+							k = j + 1;
+							j = 3;
+						}
+					}
+					k = k << 6;
+					k &= 0xc0;
+					ReserveVolNow[i] |= k;
+                   //第几个的i就表示0——8星期一到星期天
+					boxes = document.getElementsByName("reserve_week_" + i);
+					k = 0;
+					for(j = 0; j < 7; j++) {
+						if(boxes[j].checked == true) {
+							k = k | (1 << j);
+						}
+					}
+					k = k << 25;
+					k &= 0xfe000000;
+					ReserveVolNow[i] |= k;
+					var Time;
+					//获取时间
+					Time = document.getElementById("reserve_tm_" + i).value;
+					k = parseInt(Time.substring(0, 2)); //获取小时
+					k = k << 16;
+					k &= 0x1f0000;
+					ReserveVolNow[i] |= k;
+					k = parseInt(Time.substring(3, 5)); //获取分钟	
+					k = k << 8;
+					k &= 0x3f00;
+					ReserveVolNow[i] |= k;
+
+					k = ReserveVolNow[i];
+					for(j = 0; j < 8; j++) {
+						var v = k >> 28;
+						v &= 0xf;
+						ReserveStr += v.toString(16);
+						k <<= 4;
+					}
+
+				}
+
+				//        
+				ResetWaitStartTime();
+				//京东方法，控制设备，写法固定
+				var command = {
+					"command": [{
+						"stream_id": Stream_def[JDSTREAM_VOLINFO_PT_PREORDAIN],
+						"current_value": ReserveStr
+					}]
+				}
+			console.log(Stream_def[JDSTREAM_VOLINFO_PT_PREORDAIN],ReserveStr)
+				controlDevice(command, false);
+			}
+               
+             //预约布撤防时钟
+			function ReserveClock() {
+		
+				var i = 0,
+					j = 0,
+					k = 0;
+					//ClockReserveActive 最开始是0 每一次对时钟操作对会对此变量重新变值
+				if(ClockReserveActive > 0) {
+					ClockReserveActive--;
+					 // 这个数操作会变                           10
+					if(ClockReserveActive == ClockReserveSendCmdVol_Def) {
+						//预约布撤防更新
+						ReserveUpdate();
+					}
+				} else {
+					//不允许为负
+					ClockReserveActive = 0;
+				}
+
+				//此id已经弃用 $("#reserve_info").text(ClockReserveActive.toString(10)+"  "+ReserveStr);
+
+			}
+             //预约布撤防显示 作为点击事件
+			function ReserveDisplay(sel) {
+				//所有的详情按钮
+				var boxes = document.getElementsByName("reserve_display");
+                  //点击详情显示设置框，再次点击消失
+				if(boxes[sel].checked == true) {
+					$("#reserve_item_tm_" + sel).show();
+					$("#reserve_item_" + sel).show();
+				} else {
+					$("#reserve_item_tm_" + sel).hide();
+					$("#reserve_item_" + sel).hide();
+				}
+			}
+               //取消当前启动按钮 ，基本有在详情设置时取消当前的启动页面
+			function ReserveClrEn(sel) {
+				//所有的启用按钮
+				boxes = document.getElementsByName("reserve_en");
+				boxes[sel].checked = false;
+			}
+         
+          //启动按钮的点击事件不懂什么用啊
+			function ReserveEn(sel) {
+		//ClockReserveSendCmdVol_Def 是10
+				ClockReserveActive = ClockReserveSendCmdVol_Def + 3;
+				//ReserveUpdate();
+			}
+           //详情下的在家布防，外出布防，撤防的点击事件
+			function ReserveMod(sel, mod) {
+				ClockReserveActive = ClockReserveActiveVol_Def;
+				ReserveClrEn(sel);//取消当前启动按钮
+			}
+             //星期一到星期天的点击事件
+			function ReserveWeek(sel, week) {
+				ClockReserveActive = ClockReserveActiveVol_Def;
+				ReserveClrEn(sel); //取消当前启动按钮
+			}
+                //时间设置的点击事件
+			function ReserveTime(sel) {
+				ClockReserveActive = ClockReserveActiveVol_Def;
+				//ReserveClrEn(sel);  取消当前启动按钮
+			}
+          
+             //没用到
+			function ReserveTimeHour(sel) {
+				ClockReserveActive = ClockReserveActiveVol_Def;
+				//ReserveClrEn(sel);
+			}
+              //没用到
+			function ReserveTimeMin(sel) {
+				ClockReserveActive = ClockReserveActiveVol_Def;
+				//ReserveClrEn(sel);
+			}
+			
+            //预约布撤防初始化 此函数里面有个永久计时器，要改时间可能就要在这改
+			function InitReserve() {
+				InitReserveFg = 1;
+
+				$("#reserve_all .reserve").empty();
+				var str = "";
+				//str += "<div id=\"reserve_info\" style=\"background-color: #999999;height: 20px;\">info</div>";
+				//str += "<div style=\"background-color: #7788ff; \"><button onclick=\"ReserveUpdate()\">更新</button></div>";
+				str += "<div class=\"reserve_title_all\">";
+				str += "<li style=\"width: 10%; \"></li>";
+				str += "<li style=\"width: 90%; \">" + ReserveTitelLang_def[lang_sel] + "</li>";
+				str += "</div>"; //这里是标题预约不撤防
+				var i = 0;
+				var j;
+				//    8
+				for(i = 0; i < ReserveVolGroupNum_Def; i++) {
+					str += "<div class=\"reserve_title\">";
+					var ser = i + 1;
+					str += "<li style=\"width: 5%; \"></li>";
+					str += "<li style=\"width: 10%; \" id=\"reserve_name_" + i + "\">" + ser + "</li>";
+
+					str += "<li style=\"width: 10%; padding: 15px 0px 20px 0px;\"><div class=\"squaredTwo\"><input onclick=\"ReserveEn(" + i + ")\" name=\"reserve_en\" type=\"checkbox\" id=\"reserve_en_" + i + "\" /><label for=\"reserve_en_" + i + "\"></label></div></li>";
+					str += "<li style=\"width: 35%; \">" + OnOffLang_def[lang_sel] + "</li>";  //启用
+
+					str += "<li style=\"width: 20%; text-align:right \">" + ItemLang_def[lang_sel] + "</li>";  //详情
+					str += "<li style=\"width: 20%; padding: 15px 0px 20px 0px;\"><div class=\"squaredOne\"><input onclick=\"ReserveDisplay(" + i + ")\" name=\"reserve_display\" type=\"checkbox\" id=\"reserve_display_" + i + "\" /><label for=\"reserve_display_" + i + "\"></label></div></li>";
+					str += "</div>";
+
+					str += "<div style=\"display: none;\" class=\"reserve_item_tm\" id=\"reserve_item_tm_" + i + "\">";
+
+					str += "<li style=\"width: 40%; padding: 30px 0px 0px 0px; font-size: 13px; text-align:right \">" + SetTimeLang_def[lang_sel] + "</li>";  //请设置预约时间
+
+					str += "<li style=\"width: 5%; \"></li>";
+					str += "<li style=\"width: 55%; \"><input onclick=\"ReserveTime(" + i + ")\" runat=\"server\" readonly=\"readonly\" type=\"time\" style=\"width:80%;\" id=\"reserve_tm_" + i + "\"/></li>"; //这里有不兼容的，可能要改
+
+					str += "</div>";
+
+					str += "<div style=\"display: none;\" class=\"reserve_item\" id=\"reserve_item_" + i + "\">";
+					for(j = 0; j < 3; j++) {
+						str += "<li style=\"width: 10%; \"><div class=\"roundedOne\"><input onclick=\"ReserveMod(" + i + "," + j + ")\" name=\"reserve_mod_" + i + "\" type=\"radio\" id=\"reserve_mod_" + i + "_" + j + "\" /><label for=\"reserve_mod_" + i + "_" + j + "\"></label></div></li>";
+						str += "<li style=\"width: 23%; padding: 24px 0px 6px 0px;\">" + ArmStLang_def[lang_sel][j] + "</li>";  //在家布防，外出布防，撤防
+					}
+
+					for(j = 0; j < 1; j++) {
+						str += "<li style=\"width: 10%; \"><div class=\"squaredTwo\"><input onclick=\"ReserveWeek(" + i + "," + j + ")\" name=\"reserve_week_" + i + "\" type=\"checkbox\" id=\"reserve_week_" + i + "_" + j + "\" /><label for=\"reserve_week_" + i + "_" + j + "\"></label></div></li>";
+						str += "<li style=\"width: 23%; color:#F00; padding: 24px 0px 6px 0px;\">" + WeekNameLang_def[lang_sel][j] + "</li>";//星期一到星期六
+					}
+					for(j = 1; j < 7; j++) {
+						str += "<li style=\"width: 10%; \"><div class=\"squaredTwo\"><input onclick=\"ReserveWeek(" + i + "," + j + ")\" name=\"reserve_week_" + i + "\" type=\"checkbox\" id=\"reserve_week_" + i + "_" + j + "\" /><label for=\"reserve_week_" + i + "_" + j + "\"></label></div></li>";
+						str += "<li style=\"width: 23%; padding: 24px 0px 6px 0px;\">" + WeekNameLang_def[lang_sel][j] + "</li>";//星期一到星期六这里写了2遍看不穿
+					}
+					str += "<li style=\"width: 66%;\"></li>";
+
+					str += "<li style=\"width: 100%;\"><br><br></li>";
+
+					str += "</div>";
+				}
+
+				$("#reserve_all .reserve").append(str);
+		   $(function(){
+			var currYear = (new Date()).getFullYear();	
+			var opt={};
+			opt.date = {preset : 'date'};
+			opt.datetime = {preset : 'datetime'};
+			opt.time = {preset : 'time'};
+			opt.default = {
+				theme: 'android-ics light', //皮肤样式
+		        display: 'modal', //显示方式 
+		        mode: 'scroller', //日期选择模式
+				dateFormat: 'yyyy-mm-dd',
+				lang: 'zh',
+				showNow: true,
+				nowText: "现在",
+		        startYear: currYear - 10, //开始年份
+		        endYear: currYear + 80 //结束年份
+			};
+         
+	    var optTime = $.extend(opt['time'], opt['default']);
+			$("#reserve_tm_0").mobiscroll(optTime).time(optTime);//时分型
+            $("#reserve_tm_1").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_2").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_3").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_4").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_5").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_6").mobiscroll(optTime).time(optTime);
+            $("#reserve_tm_7").mobiscroll(optTime).time(optTime);
+            
+         });
+
+				RefreshReserve(); //预约布撤防刷新
+              
+               //不断刷新一个时钟
+				setInterval(function() { ReserveClock(); }, 1000);
+
+			}
+			
+			
+			
+			
+             //预约布撤防刷新
+			function RefreshReserve() {
+				if(InitReserveFg == 0) return;
+
+				var info = Stream_vol[JDSTREAM_VOLINFO_PT_PREORDAIN];
+				if(info.length != (ReserveVolGroupNum_Def * 8)) return;
+
+				if($("#reserve_all").is(":visible")) { //显示
+				} else $("#reserve_all").show();
+
+				if(ClockReserveActive != 0) return;
+
+				var group = 0;
+				for(group = 0; group < ReserveVolGroupNum_Def; group++) {
+					var str = info.substring(group * 8, (group * 8) + 8);
+					ReserveVol[group] = parseInt(str, 16);
+				}
+
+				for(group = 0; group < ReserveVolGroupNum_Def; group++) {
+					var ser = group + 1;
+					$("#reserve_name_" + group).text(ser.toString());
+
+					var vol = ReserveVol[group];
+					var en = (vol >> 24) & 1;
+					var week = (vol >> 25) & 0x7f;
+					var mod = (vol >> 6) & 0x3;
+					var hour = (vol >> 16) & 0x1f;
+					var min = (vol >> 8) & 0x3f;
+
+					var Time, Hour, Minute;
+					if(hour >= 10) Hour = hour.toString();
+					else Hour = "0" + hour.toString();
+					if(min >= 10) Minute = min.toString();
+					else Minute = "0" + min.toString();
+					Time = Hour + ":" + Minute;
+					$("#reserve_tm_" + group).val(Time);
+
+					var i;
+					var boxes = document.getElementsByName("reserve_week_" + group);
+					for(i = 0; i < 7; i++) {
+						if(week & (1 << i)) boxes[i].checked = true;
+						else boxes[i].checked = false;
+					}
+					boxes = document.getElementsByName("reserve_en");
+					if(en) boxes[group].checked = true;
+					else boxes[group].checked = false;
+
+					if(mod) mod--;
+					var req = "input:radio[name=reserve_mod_" + group + "]";
+					$(req).eq(mod).attr("checked", true);
+
+				}
+
+			}
+			
+			
+			
+			
+			
+			
+		</script>
+
+	</body>
+
+</html>
+<!doctype html>
